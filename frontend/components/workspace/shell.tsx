@@ -26,6 +26,7 @@ export function WorkspaceIcon({ name }: { name: Section | 'menu' | 'logout' | 'a
     leads: <><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18m-13 4h8m-8 3h5"/></>,
     clients: <><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m2-15a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 4v2"/></>,
     quotations: <><path d="M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h8"/></>,
+    blog: <><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></>,
     team: <><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m4-11v6m-3-3h6"/></>,
     security: <><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></>,
     settings: <><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/><circle cx="12" cy="12" r="7"/></>,
