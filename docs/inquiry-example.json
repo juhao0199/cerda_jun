@@ -1,0 +1,10 @@
+{
+  "requestId": "0ed3a7a9-cc1f-4d1d-a4b5-247952ab7e01",
+  "overview": "Build a multilingual company website.",
+  "name": "Example Client",
+  "email": "client@example.com",
+  "company": "Example Company",
+  "discovery": {"type":"website","goal":"design","stage":"ready","features":["cms"]},
+  "consent": true,
+  "website": ""
+}

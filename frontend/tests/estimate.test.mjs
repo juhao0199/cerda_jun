@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {estimate,availableFeatures,initialDiscovery} from '../lib/estimate.ts';
+const baseline={type:'website',goal:'design',features:[],stage:'ready'};
+test('incomplete discovery returns no quote',()=>assert.equal(estimate(initialDiscovery),null));
+test('website baseline gives rounded range',()=>{const r=estimate(baseline);assert.equal(r.low,650);assert.equal(r.high,950);});
+test('features add cost once, incompatible features ignored',()=>{const a=estimate({...baseline,features:['cms','cms','dashboard']});const b=estimate({...baseline,features:['cms']});assert.deepEqual(a,b);assert.ok(a.low>estimate(baseline).low);});
+test('stage and features affect range',()=>{assert.ok(estimate({...baseline,stage:'redesign'}).high>estimate(baseline).high);});
+test('exploration is supported and contains valid range',()=>{const r=estimate({...baseline,type:'explore'});assert.ok(r.high>r.low);});
+test('unknown values fail safely',()=>assert.equal(estimate({...baseline,type:'invalid'}),null));
+test('feature compatibility is explicit',()=>{assert.ok(!availableFeatures('ai').some(f=>f.id==='cms'));assert.ok(availableFeatures('ai').some(f=>f.id==='knowledge'));});

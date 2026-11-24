@@ -1,0 +1,164 @@
+{
+  "projectTypes": [
+    {
+      "id": "website",
+      "label": "A website that brings in customers",
+      "detail": "Company sites, landing pages and online stores.",
+      "base": 699
+    },
+    {
+      "id": "software",
+      "label": "Software that makes work easier",
+      "detail": "Internal tools, dashboards and customer portals.",
+      "base": 1499
+    },
+    {
+      "id": "ai",
+      "label": "An intelligent workflow",
+      "detail": "Knowledge assistants and practical automation.",
+      "base": 1999
+    },
+    {
+      "id": "support",
+      "label": "Improve an existing product",
+      "detail": "Performance, redesign or maintenance.",
+      "base": 299
+    },
+    {
+      "id": "explore",
+      "label": "I am still exploring",
+      "detail": "Let’s find the right starting point.",
+      "base": 699
+    }
+  ],
+  "goals": [
+    {
+      "id": "launch",
+      "label": "Launch quickly"
+    },
+    {
+      "id": "design",
+      "label": "Stand out visually"
+    },
+    {
+      "id": "operations",
+      "label": "Reduce repetitive work"
+    },
+    {
+      "id": "conversion",
+      "label": "Get more customers"
+    },
+    {
+      "id": "scale",
+      "label": "Build for growth"
+    }
+  ],
+  "options": [
+    {
+      "id": "cms",
+      "label": "Manage content",
+      "price": 250,
+      "types": [
+        "website",
+        "explore",
+        "support"
+      ]
+    },
+    {
+      "id": "language",
+      "label": "Multiple languages",
+      "price": 150,
+      "types": [
+        "website",
+        "explore",
+        "software",
+        "support"
+      ]
+    },
+    {
+      "id": "booking",
+      "label": "Bookings & payments",
+      "price": 350,
+      "types": [
+        "website",
+        "software",
+        "explore"
+      ]
+    },
+    {
+      "id": "dashboard",
+      "label": "Dashboard & reporting",
+      "price": 400,
+      "types": [
+        "software",
+        "ai",
+        "explore",
+        "support"
+      ]
+    },
+    {
+      "id": "accounts",
+      "label": "User accounts",
+      "price": 300,
+      "types": [
+        "website",
+        "software",
+        "explore"
+      ]
+    },
+    {
+      "id": "knowledge",
+      "label": "AI knowledge assistant",
+      "price": 499,
+      "types": [
+        "ai",
+        "software",
+        "website",
+        "explore"
+      ]
+    },
+    {
+      "id": "integration",
+      "label": "Connect existing tools",
+      "price": 350,
+      "types": [
+        "ai",
+        "software",
+        "explore",
+        "support"
+      ]
+    },
+    {
+      "id": "seo",
+      "label": "Search visibility",
+      "price": 150,
+      "types": [
+        "website",
+        "support",
+        "explore"
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "id": "idea",
+      "label": "I have an idea",
+      "factor": 1.15
+    },
+    {
+      "id": "ready",
+      "label": "Ready to build",
+      "factor": 1
+    },
+    {
+      "id": "redesign",
+      "label": "Replacing an existing system",
+      "factor": 1.25
+    },
+    {
+      "id": "partner",
+      "label": "Looking for a technical partner",
+      "factor": 1.15
+    }
+  ]
+}

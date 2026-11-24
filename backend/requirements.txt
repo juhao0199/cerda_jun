@@ -1,0 +1,9 @@
+Django>=5.2.8,<5.3
+djangorestframework>=3.16.1,<3.17
+psycopg[binary]>=3.2,<4
+drf-spectacular>=0.28,<0.30
+gunicorn>=23,<24
+
+argon2-cffi>=23.1,<26
+cryptography>=44,<49
+pyotp>=2.9,<3

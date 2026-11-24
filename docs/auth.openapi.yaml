@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: Cedar & Cursor Authentication API
+  version: 1.7.0
+servers:
+  - url: /api/v1
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: __Host-cedar_session
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRFToken
+  schemas:
+    Identity:
+      type: object
+      required: [username, role]
+      properties:
+        username: {type: string}
+        role: {type: string, enum: [owner, staff, client]}
+paths:
+  /auth/csrf:
+    get:
+      security: []
+      description: Obtain a masked CSRF token and corresponding HttpOnly cookie.
+      responses:
+        '200': {description: CSRF token JSON}
+  /auth/login:
+    post:
+      description: Same-origin JSON only. Requires CSRF cookie and token, password and fresh TOTP. Sets session cookie on success.
+      security: [{csrfToken: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [username, password, code]
+              properties:
+                username: {type: string, maxLength: 150}
+                password: {type: string, maxLength: 256, format: password}
+                code: {type: string, pattern: '^[0-9]{6}$'}
+      responses:
+        '200': {description: Identity and rotated csrfToken}
+        '400': {description: Invalid request}
+        '401': {description: Invalid credentials}
+        '403': {description: CSRF or origin rejected}
+        '413': {description: Request too large}
+        '415': {description: JSON required}
+        '429': {description: Rate limit exceeded}
+  /auth/me:
+    get:
+      security: [{sessionCookie: []}]
+      responses:
+        '200':
+          description: Current identity
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/Identity'}
+        '401': {description: Authentication required}
+  /auth/logout:
+    post:
+      security: [{sessionCookie: [], csrfToken: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, additionalProperties: false}
+      responses:
+        '200': {description: Session invalidated}
+        '401': {description: Authentication required}
+        '403': {description: Verification failed}
+  /auth/password:
+    post:
+      security: [{sessionCookie: [], csrfToken: []}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [currentPassword, newPassword, code]
+              properties:
+                currentPassword: {type: string, format: password, maxLength: 256}
+                newPassword: {type: string, format: password, minLength: 15, maxLength: 256}
+                code: {type: string, pattern: '^[0-9]{6}$'}
+      responses:
+        '200': {description: Password changed, all sessions revoked}
+        '400': {description: Invalid request or password policy}
+        '401': {description: Authentication required}
+        '403': {description: Verification failed}
+        '429': {description: Rate limit exceeded}
+  /staff/inquiries:
+    get:
+      security: [{sessionCookie: []}]
+      description: Owner or staff only, latest 50 records.
+      responses:
+        '200': {description: Inquiry summaries}
+        '401': {description: Authentication required}
+        '403': {description: Access denied}
+  /staff/security-events:
+    get:
+      security: [{sessionCookie: []}]
+      description: Owner only, latest 50 events.
+      responses:
+        '200': {description: Security event summaries}
+        '401': {description: Authentication required}
+        '403': {description: Access denied}

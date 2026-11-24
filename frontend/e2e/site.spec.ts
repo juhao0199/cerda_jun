@@ -1,0 +1,50 @@
+import {test,expect} from '@playwright/test';
+test('hero switches between meaningful capability diagrams',async({page})=>{
+ await page.goto('/');
+ const hero=page.locator('#home');
+ await expect(hero.getByRole('img',{name:/responsive web layout/i})).toBeVisible();
+ await hero.getByRole('button',{name:'Software',exact:true}).click();
+ await expect(hero.getByRole('img',{name:/events moving/i})).toBeVisible();
+ await hero.getByRole('button',{name:'AI',exact:true}).click();
+ await expect(hero.getByRole('img',{name:/question routed/i})).toBeVisible();
+ await hero.getByRole('button',{name:'Pause motion'}).click();
+ await expect(hero.getByRole('button',{name:'Play motion'})).toHaveAttribute('aria-pressed','true');
+});
+test('guided estimate and local brief export',async({page})=>{
+ await page.goto('/#estimate');
+ const region=page.locator('#estimate');
+ await expect(region.getByRole('button',{name:'Continue'})).toBeDisabled();
+ await region.getByRole('button',{name:/A website that brings in customers/}).click();
+ await region.getByRole('button',{name:'Continue'}).click();
+ await region.getByRole('button',{name:'Stand out visually'}).click();
+ await region.getByRole('button',{name:'Continue'}).click();
+ await region.getByRole('button',{name:'Manage content'}).click();
+ await region.getByRole('button',{name:'Continue'}).click();
+ await region.getByRole('button',{name:'Ready to build'}).click();
+ await region.getByRole('button',{name:'Continue'}).click();
+ await expect(region.getByText('$900 – $1,250')).toBeVisible();
+ await region.getByRole('link',{name:/Prepare a tailored brief/}).click();
+ const contact=page.locator('#contact');
+ await contact.getByLabel('Project overview').fill('A multilingual business website for our customers.');
+ await contact.getByRole('button',{name:'Continue'}).click();
+ await contact.getByLabel('Your name').fill('Test Client');
+ await contact.getByLabel('Email').fill('client@example.com');
+ await contact.getByRole('button',{name:'Continue'}).click();
+ const download=page.waitForEvent('download');
+ await contact.getByRole('button',{name:/Export brief/}).click();
+ expect((await download).suggestedFilename()).toBe('cedar-cursor-project-brief.txt');
+});
+test('workflow responds to stage selection',async({page})=>{
+ await page.goto('/#process');
+ await page.getByRole('tab',{name:'Build'}).click();
+ await expect(page.getByRole('tabpanel')).toContainText('A working product');
+ await page.getByRole('button',{name:'Next stage'}).click();
+ await expect(page.getByRole('tab',{name:'Refine'})).toHaveAttribute('aria-selected','true');
+});
+test('blog routes and unknown slug',async({page})=>{
+ await page.goto('/blog');
+ await page.getByRole('link',{name:/What should you budget for a business website/}).click();
+ await expect(page.getByRole('heading',{level:1})).toHaveText('What should you budget for a business website?');
+ const response=await page.goto('/blog/unknown-post');
+ expect(response?.status()).toBe(404);
+});
