@@ -29,7 +29,7 @@ if not DEBUG:
         raise ImproperlyConfigured('Set a strong PostgreSQL password.')
 INSTALLED_APPS = ['django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
     'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles',
-    'rest_framework', 'drf_spectacular', 'apps.inquiries', 'apps.accounts']
+    'rest_framework', 'drf_spectacular', 'apps.inquiries', 'apps.accounts', 'apps.quotations']
 MIDDLEWARE = ['django.middleware.security.SecurityMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware', 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware', 'apps.accounts.middleware.SecurityBoundaryMiddleware', 'django.contrib.messages.middleware.MessageMiddleware',

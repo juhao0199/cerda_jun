@@ -6,5 +6,6 @@ urlpatterns = [
     path('api/v1/inquiries/', InquiryView.as_view(), name='inquiry-create'),
     path('api/v1/', include('apps.accounts.urls')),
     path('api/v1/staff/crm/', include('apps.inquiries.crm_urls')),
+    path('api/v1/staff/quotations/', include('apps.quotations.urls')),
     path('health/', health),
 ]
