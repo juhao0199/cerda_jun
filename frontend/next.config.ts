@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       ...['csrf','login','logout','me','password'].map(action => ({source:`/api/v1/auth/${action}`, destination:`${backend}/api/v1/auth/${action}/`})),
       ...['overview','leads','stage','notes','clients','assign','create','edit','archive','export'].map(action => ({source:`/api/v1/staff/crm/${action}`, destination:`${backend}/api/v1/staff/crm/${action}/`})),
       {source:'/api/v1/staff/crm/leads/:reference', destination:`${backend}/api/v1/staff/crm/leads/:reference/`},
+      ...['catalog','list','create','change','detail/:reference','pdf/:reference/:version'].map(action => ({source:`/api/v1/staff/quotations/${action}`, destination:`${backend}/api/v1/staff/quotations/${action}/`})),
       ...['team','team/action','security-center'].map(action => ({source:`/api/v1/staff/${action}`, destination:`${backend}/api/v1/staff/${action}/`})),
       ...['inquiries','security-events'].map(action => ({source:`/api/v1/staff/${action}`, destination:`${backend}/api/v1/staff/${action}/`})),
     ];
