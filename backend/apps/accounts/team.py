@@ -134,7 +134,7 @@ def security_events(request):
         page = query(request, {'page', 'category', 'account'})
         category = request.GET.get('category', '')
         account = request.GET.get('account', '')
-        if category not in ('', 'login', 'logout', 'password', 'account', 'team', 'crm', 'quotation'):
+        if category not in ('', 'login', 'logout', 'password', 'account', 'team', 'crm', 'quotation', 'blog'):
             raise ValueError('Invalid category.')
         account_id = positive_id(account) if account else None
     except ValueError:

@@ -7,5 +7,7 @@ urlpatterns = [
     path('api/v1/', include('apps.accounts.urls')),
     path('api/v1/staff/crm/', include('apps.inquiries.crm_urls')),
     path('api/v1/staff/quotations/', include('apps.quotations.urls')),
+    path('api/v1/staff/blog/', include('apps.blog.urls')),
+    path('api/v1/public/blog/', include('apps.blog.public_urls')),
     path('health/', health),
 ]

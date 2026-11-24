@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { api, mutate, type Identity } from '@/lib/session-api';
+import BlogWorkspace from '@/components/blog';
 import QuotationWorkspace from '@/components/quotations';
 import CRMWorkspace from '@/components/crm/workspace';
 import SalesPipeline from '@/components/crm/pipeline';
@@ -65,6 +66,7 @@ export function WorkspaceView({ section }: { section: Section }) {
     case 'leads':return <><Heading title="Leads" description={identity.role==='owner'?"Review all inquiries, assign staff and manage opportunities.":"Review your assigned inquiries and record follow-ups."}/><SalesPipeline canManage={identity.role==='owner'}/></>;
     case 'clients':return <><Heading title="Clients" description={identity.role==='owner'?"Manage your directory of converted customers.":"Customers linked to your assigned leads."}/><CRMWorkspace key="clients" mode="clients"/></>;
     case 'quotations':return <QuotationWorkspace/>;
+    case 'blog':return <BlogWorkspace canPublish={identity.role==='owner'}/>;
     case 'team':return <TeamDirectory/>;
     case 'security':return <SecurityCenter/>;
     case 'settings':return <AccountSettings identity={identity}/>;
