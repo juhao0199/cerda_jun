@@ -35,7 +35,7 @@ def mid(value):
 
 
 def competitor_row(c):
-    return {'id':str(c.pk),'name':c.name,'domain':c.domain,'market':c.market,'active':c.active,'version':str(c.version)}
+    return {'id':str(c.pk),'name':c.name,'domain':c.domain,'market':c.market,'kind':c.kind,'active':c.active,'version':str(c.version)}
 
 
 def obs_row(o):
