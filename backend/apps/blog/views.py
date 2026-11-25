@@ -12,7 +12,8 @@ from apps.accounts.views import require_role, fail
 from apps.accounts.security import audit
 from apps.inquiries.crm import locked_role, pagination
 from .content import normalize, slug_value, minutes
-from .models import Post, Revision, CoverImage
+from .models import Post, Revision, CoverImage, SlugAlias
+from .editorial import editorial_lock, validate_terms
 from .rich_content import MAX_JSON, normalize_document
 
 
@@ -79,7 +80,10 @@ def public_row(post, full=False):
     fields = post.published
     result = {'slug': post.slug, 'title': fields['title'], 'category': fields['category'],
               'summary': fields['summary'], 'minutes': minutes(fields), 'cover': fields['cover'],
-              'publishedAt': post.published_at.isoformat()}
+              'publishedAt': (post.first_published_at or post.published_at).isoformat(),
+              'modifiedAt': (post.published_modified_at or post.published_at).isoformat(),
+              'noindex': fields.get('noindex', False), 'author': fields.get('author') or 'Cedar & Cursor',
+              'coverAlt': fields.get('coverAlt', '')}
     if full:
         result.update({k: fields[k] for k in ('sections', 'tags', 'seoTitle', 'seoDescription')})
         if 'document' in fields:
@@ -101,7 +105,10 @@ def public_list(request):
 @require_GET
 def public_detail(request, slug):
     post = Post.objects.filter(slug=slug, status='published', published__isnull=False, published_at__isnull=False).first()
-    return JsonResponse(public_row(post, True)) if post else fail('Article not found.', 404)
+    if post:
+        return JsonResponse(public_row(post, True))
+    alias = SlugAlias.objects.filter(slug=slug, post__status='published', post__published__isnull=False, post__published_at__isnull=False).select_related('post').first()
+    return JsonResponse({'redirectSlug': alias.post.slug}) if alias else fail('Article not found.', 404)
 
 
 @require_GET
@@ -152,8 +159,15 @@ def create(request, data):
     with transaction.atomic():
         if not locked_role(request):
             return fail('Access denied.', 403)
+        editorial_lock()
+        if Post.objects.filter(slug=slug).exists() or SlugAlias.objects.filter(slug=slug).exists():
+            return fail('Slug already exists or is reserved.', 409)
         if not cover_exists(fields):
             return fail('Article image not found.', 400)
+        try:
+            validate_terms(fields)
+        except ValueError as e:
+            return fail(str(e), 400)
         post, created = Post.objects.get_or_create(slug=slug, defaults={'draft': fields})
         if not created:
             return fail('Slug already exists. Open the existing article or use a different slug.', 409)
@@ -165,22 +179,25 @@ def create(request, data):
 @require_role('owner', 'staff')
 def change(request, data):
     action = data.get('action')
-    if not isinstance(action, str) or action not in ('save', 'publish', 'archive', 'restore'):
+    if not isinstance(action, str) or action not in ('save', 'publish', 'archive', 'restore', 'rename'):
         return fail('Invalid action.', 400)
     try:
-        if set(data) != ({'slug', 'version', 'action', 'fields'} if action == 'save' else {'slug', 'version', 'action'}):
+        expected = {'slug', 'version', 'action'} | ({'fields'} if action == 'save' else {'newSlug'} if action == 'rename' else set())
+        if set(data) != expected:
             raise ValueError('Invalid request fields.')
         slug = slug_value(data['slug'])
         version = data['version']
         if type(version) is not int or not 1 <= version < 2**53:
             raise ValueError('Invalid version.')
         fields = normalize(data['fields']) if action == 'save' else None
+        new_slug = slug_value(data['newSlug']) if action == 'rename' else None
     except (ValueError, UnicodeError) as e:
         return fail(str(e), 400)
     with transaction.atomic():
         role = locked_role(request)
         if not role or (action != 'save' and role != 'owner'):
             return fail('Access denied.', 403)
+        editorial_lock()
         post = Post.objects.select_for_update().filter(slug=slug).first()
         if not post:
             return fail('Article not found.', 404)
@@ -195,13 +212,25 @@ def change(request, data):
         elif action == 'save':
             if not cover_exists(fields):
                 return fail('Article image not found.', 400)
+            try:
+                validate_terms(fields, post.draft)
+            except ValueError as e:
+                return fail(str(e), 400)
             post.draft = fields
         elif action == 'publish':
             if not cover_exists(post.draft):
                 return fail('Article image not found.', 400)
             post.status = 'published'
             post.published = post.draft
-            post.published_at = timezone.now()
+            now = timezone.now()
+            post.first_published_at = post.first_published_at or post.published_at or now
+            post.published_at = post.first_published_at
+            post.published_modified_at = now
+        elif action == 'rename':
+            if new_slug == post.slug or Post.objects.filter(slug=new_slug).exists() or SlugAlias.objects.filter(slug=new_slug).exists():
+                return fail('Slug already exists or is reserved.', 409)
+            SlugAlias.objects.create(slug=post.slug, post=post)
+            post.slug = new_slug
         elif action == 'archive':
             post.status = 'archived'
             post.published = None

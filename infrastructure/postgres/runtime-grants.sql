@@ -15,3 +15,10 @@ REVOKE UPDATE ON blog_coverimage FROM cedar_runtime;
 GRANT UPDATE (filename, alt, caption, version) ON blog_coverimage TO cedar_runtime;
 GRANT DELETE ON blog_coverimage TO cedar_runtime;
 -- PostgreSQL SELECT FOR UPDATE requires UPDATE privilege on at least one column.
+
+-- Editorial names and URL aliases remain reserved; no hard deletion or alias rewrite.
+REVOKE DELETE ON blog_editorialterm FROM cedar_runtime;
+REVOKE UPDATE, DELETE ON blog_slugalias FROM cedar_runtime;
+
+-- Human observations are append-only.
+REVOKE UPDATE, DELETE ON blog_discoveryobservation FROM cedar_runtime;

@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       ...['overview','leads','stage','notes','clients','assign','create','edit','archive','export'].map(action => ({source:`/api/v1/staff/crm/${action}`, destination:`${backend}/api/v1/staff/crm/${action}/`})),
       {source:'/api/v1/staff/crm/leads/:reference', destination:`${backend}/api/v1/staff/crm/leads/:reference/`},
       ...['catalog','list','create','change','detail/:reference','pdf/:reference/:version'].map(action => ({source:`/api/v1/staff/quotations/${action}`, destination:`${backend}/api/v1/staff/quotations/${action}/`})),
-      ...['list','create','change','detail/:slug','revision/:slug/:version','cover/upload','cover/:imageId','media/list','media/detail/:imageId','media/change','media/derive'].map(action => ({source:`/api/v1/staff/blog/${action}`, destination:`${backend}/api/v1/staff/blog/${action}/`})),
+      ...['list','create','change','detail/:slug','revision/:slug/:version','cover/upload','cover/:imageId','media/list','media/detail/:imageId','media/change','media/derive','terms/list','terms/change','seo/list','discovery/list','discovery/create'].map(action => ({source:`/api/v1/staff/blog/${action}`, destination:`${backend}/api/v1/staff/blog/${action}/`})),
       {source:'/api/v1/public/blog/cover/:imageId',destination:`${backend}/api/v1/public/blog/cover/:imageId/`},
       ...['team','team/action','security-center'].map(action => ({source:`/api/v1/staff/${action}`, destination:`${backend}/api/v1/staff/${action}/`})),
       ...['inquiries','security-events'].map(action => ({source:`/api/v1/staff/${action}`, destination:`${backend}/api/v1/staff/${action}/`})),

@@ -13,6 +13,7 @@ test('owner creates and publishes a saved article',async({page})=>{
       post={slug:b.slug,title:b.fields.title,category:b.fields.category,status:'draft',version:1,updatedAt:'2026-11-25T00:00:00Z',hasUnpublishedChanges:true,draft:b.fields,history:[{version:1,status:'draft',action:'create',createdAt:'2026-11-25T00:00:00Z'}]};return route.fulfill({status:201,json:post});
     }
     if(path==='/api/v1/staff/blog/change'&&post){const b=req.postDataJSON();expect(req.headers()['x-csrftoken']).toBe('mock-token');expect(b).toEqual({slug:'example-article',version:1,action:'publish'});writes++;post={...post,status:'published',version:2,hasUnpublishedChanges:false,history:[{version:2,status:'published',action:'publish',createdAt:'2026-11-25T00:00:00Z'},...post.history]};return route.fulfill({json:post});}
+    if(path==='/api/v1/staff/blog/terms/list')return route.fulfill({json:{results:[],page:1,hasMore:false}});
     return route.fulfill({status:501,json:{error:'Unexpected request'}});
   });
   await page.goto('/workspace/blog');await page.getByRole('button',{name:'+ New article',exact:true}).click();await page.getByLabel('Article title',{exact:true}).fill('Example article');await page.getByLabel('URL slug',{exact:false}).fill('example-article');await page.getByLabel('Summary',{exact:true}).fill('A practical summary');await page.getByLabel('Category',{exact:true}).fill('Web');await page.getByRole('textbox',{name:'Article body',exact:true}).fill('A useful paragraph.');await page.getByRole('combobox',{name:'Text style',exact:true}).selectOption('2');await page.getByLabel('Cover image',{exact:true}).selectOption('web');await page.getByRole('button',{name:'Full screen',exact:true}).click();await expect(page.getByRole('dialog',{name:'Full screen article editor'})).toBeVisible();await expect(page.getByRole('button',{name:'Create draft',exact:true})).toBeVisible();await page.getByRole('button',{name:'Hide article settings',exact:true}).click();await expect(page.getByRole('complementary',{name:'Article settings',exact:true})).toBeHidden();await page.getByRole('button',{name:'Show article settings',exact:true}).click();await page.getByRole('button',{name:'Preview draft',exact:true}).click();await expect(page.getByRole('article').getByRole('heading',{name:'Example article',exact:true})).toBeVisible();await page.getByRole('button',{name:'Editor',exact:true}).click();await page.getByRole('button',{name:'Create draft',exact:true}).click();await expect(page.getByText('Draft saved.',{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Publish article',exact:true})).toBeEnabled();page.once('dialog',d=>d.accept());await page.getByRole('button',{name:'Publish article',exact:true}).click();await expect(page.getByText('Article published.',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Exit full screen',exact:true}).click();await expect(page.getByRole('dialog',{name:'Full screen article editor'})).toHaveCount(0);await expect(page.getByRole('link',{name:'View published article ↗'})).toBeVisible();expect(writes).toBe(2);
@@ -35,6 +36,7 @@ test('owner uploads a private cover and can remove it before saving',async({page
       return route.fulfill({status:201,json:{cover:'upload:'+id,width:1,height:1}});
     }
     if(path==='/api/v1/staff/blog/cover/'+id)return route.fulfill({contentType:'image/png',body:png});
+    if(path==='/api/v1/staff/blog/terms/list')return route.fulfill({json:{results:[],page:1,hasMore:false}});
     return route.fulfill({status:501,json:{error:'Unexpected request'}});
   });
   await page.goto('/workspace/blog');await page.getByRole('button',{name:'+ New article',exact:true}).click();
@@ -56,6 +58,7 @@ test('rich editor inserts uploaded body image with accessible caption',async({pa
     if(path==='/api/v1/staff/blog/list')return route.fulfill({json:{results:[],page:1,hasMore:false,counts:{draft:0,published:0,archived:0}}});
     if(path==='/api/v1/staff/blog/cover/upload'){expect(req.headers()['x-csrftoken']).toBe('mock-token');uploads++;return route.fulfill({status:201,json:{cover:'upload:'+id,width:1,height:1}});}
     if(path==='/api/v1/staff/blog/cover/'+id)return route.fulfill({contentType:'image/png',body:png});
+    if(path==='/api/v1/staff/blog/terms/list')return route.fulfill({json:{results:[],page:1,hasMore:false}});
     return route.fulfill({status:501,json:{error:'Unexpected request'}});
   });
   await page.goto('/workspace/blog');await page.getByRole('button',{name:'+ New article',exact:true}).click();
@@ -98,6 +101,7 @@ test('saved article autosaves private rich document without publishing',async({p
       const body=req.postDataJSON();expect(body.action).toBe('save');expect(body.version).toBe(2);expect(body.fields.document.type).toBe('doc');expect(body.fields.sections).toEqual([]);writes++;
       post={...post,version:3,draft:body.fields,hasUnpublishedChanges:true};return route.fulfill({json:post});
     }
+    if(path==='/api/v1/staff/blog/terms/list')return route.fulfill({json:{results:[],page:1,hasMore:false}});
     return route.fulfill({status:501,json:{error:'Unexpected request'}});
   });
   await page.goto('/workspace/blog');await page.getByRole('button',{name:'Saved article',exact:true}).click();
@@ -113,6 +117,7 @@ test('editor retains formatting through full screen and preview and guards unsav
     const path=new URL(route.request().url()).pathname.replace(/\/$/,'');
     if(path==='/api/v1/auth/me')return route.fulfill({json:{username:'staff',role:'staff'}});
     if(path==='/api/v1/staff/blog/list')return route.fulfill({json:{results:[],page:1,hasMore:false,counts:{draft:0,published:0,archived:0}}});
+    if(path==='/api/v1/staff/blog/terms/list')return route.fulfill({json:{results:[],page:1,hasMore:false}});
     return route.fulfill({status:501,json:{error:'Unexpected request'}});
   });
   await page.goto('/workspace/blog');

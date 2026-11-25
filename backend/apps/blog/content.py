@@ -24,7 +24,7 @@ def text(value, maximum, minimum=0):
 
 
 def normalize(data):
-    if not isinstance(data, dict) or not FIELDS <= set(data) or set(data) - (FIELDS | {'document'}):
+    if not isinstance(data, dict) or not FIELDS <= set(data) or set(data) - (FIELDS | {'document', 'author', 'focusKeyword', 'noindex', 'coverAlt'}):
         raise ValueError('Invalid article fields.')
     sections, tags = data['sections'], data['tags']
     rich = 'document' in data
@@ -46,6 +46,13 @@ def normalize(data):
     fields = {'title': text(data['title'], 160, 1), 'summary': text(data['summary'], 320, 1),
             'category': text(data['category'], 60, 1), 'tags': tags, 'sections': result,
             'seoTitle': text(data['seoTitle'], 100), 'seoDescription': text(data['seoDescription'], 320), 'cover': cover}
+    for key, limit in [('author', 80), ('focusKeyword', 100), ('coverAlt', 250)]:
+        if key in data:
+            fields[key] = text(data[key], limit)
+    if 'noindex' in data:
+        if type(data['noindex']) is not bool:
+            raise ValueError('Invalid indexing preference.')
+        fields['noindex'] = data['noindex']
     if rich:
         fields['document'], _ = normalize_document(data['document'])
     return fields
