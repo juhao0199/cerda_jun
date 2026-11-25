@@ -337,3 +337,37 @@ class BlogTests(TestCase):
         self.assertNotIn('actor_id',a['results'][0])
         self.assertEqual(self.staff.get(self.root+'discovery/list/?mode=seo').status_code,400)
         self.assertEqual(SecurityEvent.objects.filter(action='blog.discovery.record').count(),2)
+
+    def test_crawler_policy_permissions_version_and_public_output(self):
+        from .crawler_policy import default_policy
+        policy=self.owner.get(self.root+'technical/policy/').json()
+        self.assertEqual(policy['directives'],default_policy())
+        self.assertEqual(self.client.get(self.root+'technical/policy/').status_code,403)
+        payload={'version':policy['version'],'directives':json.dumps({**policy['directives'],'GPTBot':'block','OAI-SearchBot':'allow'})}
+        self.assertEqual(self.write('technical/policy/change',payload,self.staff).status_code,403)
+        self.assertEqual(self.write('technical/policy/change',payload,csrf=False).status_code,403)
+        self.assertEqual(self.write('technical/policy/change',payload,origin='https://other.example').status_code,403)
+        self.assertEqual(self.write('technical/policy/change',{**payload,'directives':'{"bad":"allow"}'}).status_code,400)
+        updated=self.write('technical/policy/change',payload);self.assertEqual(updated.status_code,200)
+        self.assertEqual(self.write('technical/policy/change',payload).status_code,409)
+        response=Client().get(self.public+'robots/');self.assertEqual(response.status_code,200)
+        self.assertIn(b'User-agent: GPTBot\nDisallow: /',response.content)
+        self.assertIn(b'User-agent: OAI-SearchBot\nAllow: /\nDisallow: /workspace',response.content)
+        self.assertEqual(SecurityEvent.objects.filter(action='blog.crawler.change').count(),1)
+
+    @override_settings(SITE_AUDIT_ORIGIN='http://frontend:3000')
+    def test_technical_audit_is_owner_run_and_private_append_only(self):
+        from unittest.mock import patch
+        from .models import SiteAudit
+        report={'site':'http://localhost:3000','offset':0,'pages':[{'issues':['Missing title']}],'linksChecked':0}
+        self.assertEqual(self.write('technical/run',{'offset':'0'},self.staff).status_code,403)
+        self.assertEqual(self.write('technical/run',{'offset':'0','url':'http://evil.test'}).status_code,400)
+        self.assertEqual(self.write('technical/run',{'offset':'1'}).status_code,400)
+        with patch('apps.blog.technical.run_audit',return_value=report) as measured:
+            response=self.write('technical/run',{'offset':'0'});self.assertEqual(response.status_code,201)
+            self.assertEqual(measured.call_args.args[0],'http://frontend:3000')
+        rid=response.json()['id'];self.assertEqual(SiteAudit.objects.count(),1)
+        self.assertEqual(self.client.get(self.root+'technical/history/').status_code,403)
+        self.assertEqual(self.client.get(self.root+'technical/report/'+rid+'/').status_code,403)
+        self.assertEqual(self.staff.get(self.root+'technical/report/'+rid+'/').json()['report']['policyVersion'],'1')
+        self.assertEqual(self.staff.get(self.root+'technical/history/').json()['results'][0]['id'],rid)

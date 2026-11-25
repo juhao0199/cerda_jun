@@ -6,6 +6,7 @@ import { api, mutate, type Identity } from '@/lib/session-api';
 import BlogWorkspace from '@/components/blog';
 import {EditorialDirectory} from '@/components/blog/editorial';
 import {OptimizationCenter} from '@/components/blog/optimization-center';
+import {TechnicalCenter} from '@/components/blog/technical-center';
 import {MediaLibrary} from '@/components/blog/media-library';
 import QuotationWorkspace from '@/components/quotations';
 import CRMWorkspace from '@/components/crm/workspace';
@@ -75,6 +76,8 @@ export function WorkspaceView({ section }: { section: Section }) {
     case 'seo':return <OptimizationCenter key="seo" mode="seo"/>;
     case 'aeo':return <OptimizationCenter key="aeo" mode="aeo"/>;
     case 'geo':return <OptimizationCenter key="geo" mode="geo"/>;
+    case 'audit':return <TechnicalCenter key="audit" owner={identity.role==='owner'} mode="audit"/>;
+    case 'crawlers':return <TechnicalCenter key="crawlers" owner={identity.role==='owner'} mode="crawlers"/>;
     case 'team':return <TeamDirectory/>;
     case 'security':return <SecurityCenter/>;
     case 'settings':return <AccountSettings identity={identity}/>;
