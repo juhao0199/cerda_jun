@@ -1,0 +1,18 @@
+# Optional overlay for compose.prod.yaml. S3 bucket must be private and pre-provisioned.
+x-s3-env: &s3-env
+  BLOG_OBJECT_STORAGE: s3
+  BLOG_S3_ENDPOINT: ${BLOG_S3_ENDPOINT:-}
+  BLOG_S3_BUCKET: ${BLOG_S3_BUCKET:?private bucket required}
+  BLOG_S3_REGION: ${BLOG_S3_REGION:-us-east-1}
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:?required}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?required}
+  AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+services:
+  backend:
+    environment: *s3-env
+    networks: [data, api, storage_egress]
+  migrate:
+    environment: *s3-env
+    networks: [data, storage_egress]
+networks:
+  storage_egress: {}

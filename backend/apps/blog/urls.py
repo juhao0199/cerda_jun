@@ -1,7 +1,11 @@
 from django.urls import path
-from . import views, images
+from . import views, images, media
 
 urlpatterns = [
+    path('media/list/', media.listing),
+    path('media/detail/<uuid:image_id>/', media.detail),
+    path('media/change/', media.change),
+    path('media/derive/', media.derive),
     path('cover/upload/', images.upload),
     path('cover/<uuid:image_id>/', images.private_cover),
     path('list/', views.listing),

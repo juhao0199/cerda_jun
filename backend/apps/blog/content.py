@@ -1,3 +1,4 @@
+from .rich_content import normalize_document, word_count
 import re
 
 COVERS = ('', 'web', 'software', 'ai')
@@ -23,10 +24,11 @@ def text(value, maximum, minimum=0):
 
 
 def normalize(data):
-    if not isinstance(data, dict) or set(data) != FIELDS:
+    if not isinstance(data, dict) or not FIELDS <= set(data) or set(data) - (FIELDS | {'document'}):
         raise ValueError('Invalid article fields.')
     sections, tags = data['sections'], data['tags']
-    if not isinstance(sections, list) or not 1 <= len(sections) <= 20 or not isinstance(tags, list) or len(tags) > 10:
+    rich = 'document' in data
+    if not isinstance(sections, list) or (rich and sections != []) or (not rich and not 1 <= len(sections) <= 20) or not isinstance(tags, list) or len(tags) > 10:
         raise ValueError('Use 1–20 sections and at most 10 tags.')
     result = []
     for section in sections:
@@ -41,10 +43,15 @@ def normalize(data):
     cover = data['cover']
     if not isinstance(cover, str) or (cover not in COVERS and not UPLOAD_COVER.fullmatch(cover)):
         raise ValueError('Invalid cover.')
-    return {'title': text(data['title'], 160, 1), 'summary': text(data['summary'], 320, 1),
+    fields = {'title': text(data['title'], 160, 1), 'summary': text(data['summary'], 320, 1),
             'category': text(data['category'], 60, 1), 'tags': tags, 'sections': result,
             'seoTitle': text(data['seoTitle'], 100), 'seoDescription': text(data['seoDescription'], 320), 'cover': cover}
+    if rich:
+        fields['document'], _ = normalize_document(data['document'])
+    return fields
 
 
 def minutes(fields):
+    if 'document' in fields:
+        return max(1, (word_count(fields['document']) + 199) // 200)
     return max(1, (sum(len(s['body'].split()) for s in fields['sections']) + 199) // 200)
