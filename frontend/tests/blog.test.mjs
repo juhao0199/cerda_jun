@@ -33,3 +33,18 @@ test('rich links use a narrow URL allowlist',()=>{
   for(const url of ['javascript:alert(1)','data:text/html,x','//example.com','/\\example.com','https://example.com\n','https://a:b@example.com','http:/example.com'])assert.equal(safeLink(url),false);
   assert.equal(safeLink('/blog/intro'),true);assert.equal(safeLink('https://example.com'),true);
 });
+
+import {metadataChecks,contentChecks} from '../lib/editorial-seo.ts';
+test('SEO checks use actual metadata fallbacks and warn about missing cover alt',()=>{
+  const f={...blankArticle(),title:'AI automation for your business',summary:'A short summary.',focusKeyword:'ai automation',cover:'web'};
+  const checks=metadataChecks(f,'ai-automation');
+  assert.equal(checks.find(x=>x.label.includes('phrase appears in title')).pass,true);
+  assert.equal(checks.find(x=>x.label.includes('alt text')).pass,false);
+  assert.equal(checks.find(x=>x.label.includes('Description is')).pass,false);
+  assert.equal(metadataChecks({...f,coverAlt:'Architecture diagram'},'Bad Slug').find(x=>x.label.includes('URL')).pass,false);
+});
+test('SEO content checks detect skipped headings and safe relative internal links',()=>{
+  const f={...blankArticle(),focusKeyword:'workflows',sections:[],document:{type:'doc',content:[{type:'heading',attrs:{level:3},content:[{type:'text',text:'Workflows'}]},{type:'paragraph',content:[{type:'text',text:'Contact',marks:[{type:'link',attrs:{href:'/#contact'}}]}]},{type:'studioImage',attrs:{alt:''}}]}};
+  const checks=contentChecks(f);
+  assert.equal(checks[0].pass,false);assert.equal(checks[1].pass,false);assert.equal(checks[2].pass,true);assert.equal(checks[3].pass,true);
+});

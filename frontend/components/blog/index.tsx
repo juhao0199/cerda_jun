@@ -9,6 +9,7 @@ import {RichEditor} from './rich-editor';
 import {MediaPicker,uploadMedia} from './media-library';
 import {EditorIcon} from './editor-icons';
 import {RichRender} from './rich-render';
+import {EditorialFields,SeoPreview} from './editorial';
 import {legacyDocument,hasContent} from '@/lib/rich-document';
 
 type Listing={results:BlogRow[];page:number;hasMore:boolean;counts:Record<BlogStatus,number>};
@@ -20,7 +21,7 @@ async function write(path:string,data:object){
 }
 function Preview({fields}:{fields:BlogFields}){
   const cover=coverPath(fields.cover,true);
-  return <article className={styles.preview}><p className={styles.eyebrow}>{fields.category||'Category'} · {readingMinutes(fields)} min read</p><h2>{fields.title||'Untitled article'}</h2><p>{fields.summary}</p>{cover&&<img src={cover} alt=""/>} <RichRender document={fields.document??legacyDocument(fields.sections)} privatePreview/><p>{fields.tags.join(' · ')}</p></article>;
+  return <article className={styles.preview}><p className={styles.eyebrow}>{fields.category||'Category'} · {readingMinutes(fields)} min read</p><h2>{fields.title||'Untitled article'}</h2><p>{fields.summary}</p>{cover&&<img src={cover} alt={fields.coverAlt??''}/>} <RichRender document={fields.document??legacyDocument(fields.sections)} privatePreview/><p>{fields.tags.join(' · ')}</p></article>;
 }
 export default function BlogWorkspace({canPublish}:{canPublish:boolean}){
   const [list,setList]=useState<Listing|null>(null),[search,setSearch]=useState(''),[filter,setFilter]=useState(''),[query,setQuery]=useState({q:'',status:'',page:1}),[refresh,setRefresh]=useState(0);
@@ -38,6 +39,16 @@ export default function BlogWorkspace({canPublish}:{canPublish:boolean}){
   function load(p:BlogDetail){setEditorEpoch(n=>n+1);setPost(p);setSlug(p.slug);setFields(p.draft);setTagText(p.draft.tags.join(', '));setHistorical(null);setPreview(false);setEditing(true);}
   function start(){setFull(false);setSettingsOpen(true);setEditorEpoch(n=>n+1);setPost(null);setSlug('');setFields(blankArticle());setTagText('');setHistorical(null);setPreview(false);setNotice('');setError('');setEditing(true);}
   async function open(s:string){if(busy.current)return;busy.current=true;setPending(true);setError('');setNotice('');try{load(await api<BlogDetail>(root+'detail/'+s));}catch(e){setError(handleSessionError(e));}finally{busy.current=false;setPending(false);}}
+  useEffect(()=>{const requested=new URLSearchParams(window.location.search).get('edit');if(requested&&validSlug(requested))void open(requested);},[]);
+  async function renameSlug(){
+    if(!post||dirty||busy.current||!canPublish||archived)return;
+    const value=window.prompt('New URL slug (previous URL stays reserved):',post.slug);
+    if(value===null||value===post.slug)return;
+    if(!validSlug(value)){setError('Use a lowercase URL slug with letters, digits and hyphens.');return;}
+    if(!window.confirm('Change the canonical URL now? Published articles redirect from the previous URL.'))return;
+    busy.current=true;setPending(true);setError('');
+    try{load(await write('change',{slug:post.slug,version:post.version,action:'rename',newSlug:value}));setNotice('Article URL updated.');setRefresh(n=>n+1);}catch(e){setError(handleSessionError(e));}finally{busy.current=false;setPending(false);}
+  }
   function close(){if(busy.current)return;if(dirty&&!window.confirm('Discard unsaved article changes?'))return;setFull(false);setEditing(false);setPost(null);setError('');setNotice('');}
   function update<K extends keyof BlogFields>(key:K,value:BlogFields[K]){setFields(f=>({...f,[key]:value}));}
   async function uploadImage(file:File):Promise<string|null>{
@@ -131,7 +142,7 @@ export default function BlogWorkspace({canPublish}:{canPublish:boolean}){
           {/* Keep the editor mounted during preview and full-screen transitions to retain undo history. */}
           <div hidden={preview} className={styles.writingSurface}>
             <fieldset disabled={pending||archived} className={styles.articleHeading}>
-              {coverPath(fields.cover,true)&&<img className={styles.featureImage} src={coverPath(fields.cover,true)!} alt=""/>}
+              {coverPath(fields.cover,true)&&<img className={styles.featureImage} src={coverPath(fields.cover,true)!} alt={fields.coverAlt??''}/>}
               <label><span>Article title</span><textarea className={styles.titleInput} required rows={2} maxLength={160} value={fields.title} placeholder="Article title" onChange={e=>update('title',e.target.value)}/></label>
               <label><span>Summary</span><textarea className={styles.summaryInput} required maxLength={320} rows={2} placeholder="Write a short introduction…" value={fields.summary} onChange={e=>update('summary',e.target.value)}/></label>
             </fieldset>
@@ -142,14 +153,14 @@ export default function BlogWorkspace({canPublish}:{canPublish:boolean}){
           <div className={styles.settingsHeading}><h2>Article settings</h2><button type="button" className={styles.iconAction} aria-label="Close article settings" title="Close article settings" onClick={()=>{setSettingsOpen(false);settingsToggle.current?.focus();}}><EditorIcon name="settings"/></button></div>
           <fieldset disabled={pending||archived||preview}>
             <section className={styles.settingSection}><h3>Details</h3>
-              <label>URL slug<input required maxLength={100} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={slug} readOnly={!!post} onChange={e=>setSlug(e.target.value)}/></label><small>Permanent URL after creation.</small>
-              <label>Category<input required maxLength={60} value={fields.category} onChange={e=>update('category',e.target.value)}/></label><label>Tags (comma separated)<input maxLength={410} value={tagText} onChange={e=>setTagText(e.target.value)}/></label>
+              <label>URL slug<input required maxLength={100} pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={slug} readOnly={!!post} onChange={e=>setSlug(e.target.value)}/></label><small>{post?'Previous URLs are reserved when renamed.':'Choose a descriptive URL.'}</small>{post&&canPublish&&!archived&&<button type="button" disabled={pending||dirty} onClick={()=>void renameSlug()}>Change article URL</button>}
+              <EditorialFields fields={fields} tagText={tagText} onCategory={v=>update('category',v)} onTags={setTagText} onAuthor={v=>update('author',v)}/>
             </section>
             <section className={styles.settingSection}><h3>Cover</h3><div className={styles.coverPanel}><label><span id="blog-cover-label">Cover image</span><select aria-labelledby="blog-cover-label" value={fields.cover} onChange={e=>update('cover',e.target.value)}>{uploadedCover(fields.cover)&&<option value={fields.cover}>Uploaded image</option>}{covers.map(c=><option key={c.id} value={c.id}>{c.label}</option>)}</select></label>
               {coverPath(fields.cover,true)&&<img className={styles.cover} src={coverPath(fields.cover,true)!} alt="Current cover preview"/>}
               <label className={styles.uploadLabel}>Upload cover image<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>{const file=e.currentTarget.files?.[0];e.currentTarget.value='';if(file)void uploadCover(file);}}/></label><button type="button" onClick={()=>setCoverPicker(true)}>Choose from media library</button><small>JPG, PNG or WebP · 5 MB · recommended 1200 × 630.</small>{fields.cover&&<button type="button" onClick={()=>update('cover','')}>Remove cover</button>}</div>
             </section>
-            <section className={styles.settingSection}><h3>Search & social metadata</h3><label>SEO title<input maxLength={100} value={fields.seoTitle} onChange={e=>update('seoTitle',e.target.value)} placeholder="Defaults to article title"/></label><small>{fields.seoTitle.length}/100 characters</small><label>SEO description<textarea maxLength={320} rows={3} value={fields.seoDescription} onChange={e=>update('seoDescription',e.target.value)} placeholder="Defaults to summary"/></label><small>{fields.seoDescription.length}/320 characters · Canonical URL uses the site domain and permanent slug.</small></section>
+            <section className={styles.settingSection}><h3>Search & social metadata</h3><label>SEO title<input maxLength={100} value={fields.seoTitle} onChange={e=>update('seoTitle',e.target.value)} placeholder="Defaults to article title"/></label><small>{fields.seoTitle.length}/100 characters</small><label>SEO description<textarea maxLength={320} rows={3} value={fields.seoDescription} onChange={e=>update('seoDescription',e.target.value)} placeholder="Defaults to summary"/></label><small>{fields.seoDescription.length}/320 characters</small><label>Focus keyword<input maxLength={100} value={fields.focusKeyword??''} onChange={e=>update('focusKeyword',e.target.value)}/></label><label>Cover alt text<input maxLength={250} value={fields.coverAlt??''} onChange={e=>update('coverAlt',e.target.value)}/></label><label className={styles.autosave}><input type="checkbox" checked={fields.noindex??false} onChange={e=>update('noindex',e.target.checked)}/> Discourage search indexing (noindex)</label><SeoPreview fields={fields} slug={slug}/></section>
           </fieldset>
           <section className={styles.settingSection}><h3>Draft & publishing</h3>{post?<><label className={styles.autosave}><input type="checkbox" checked={autoSave} onChange={e=>setAutoSave(e.target.checked)}/> Autosave after 5 seconds of inactivity</label>{error&&autoSave&&<small>Autosave paused. Resolve the error and save manually.</small>}</>:<small>Create a draft to enable autosave.</small>}
             {post?.status==='published'&&<a href={`/blog/${post.slug}`} target="_blank" rel="noopener noreferrer">View published article ↗</a>}

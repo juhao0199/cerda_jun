@@ -13,6 +13,7 @@ test('owner reuses library asset as article cover without uploading',async({page
     if(path==='/api/v1/staff/blog/media/detail/'+id)return route.fulfill({json:{...asset,articles:[],articleCount:0,revisionCount:0}});
     if(path==='/api/v1/staff/blog/cover/'+id)return route.fulfill({contentType:'image/png',body:png});
     if(path==='/api/v1/staff/blog/cover/upload')uploads++;
+    if(path==='/api/v1/staff/blog/terms/list')return route.fulfill({json:{results:[],page:1,hasMore:false}});
     return route.fulfill({status:501,json:{error:'Unexpected request'}});
   });
   await page.goto('/workspace/blog');await page.getByRole('button',{name:'+ New article',exact:true}).click();
@@ -39,6 +40,7 @@ test('media workspace header does not inherit the public site navigation style',
     const path=new URL(route.request().url()).pathname.replace(/\/$/,'');
     if(path==='/api/v1/auth/me')return route.fulfill({json:{username:'owner',role:'owner'}});
     if(path==='/api/v1/staff/blog/media/list')return route.fulfill({json:{results:[],page:1,hasMore:false,count:0,bytes:0}});
+    if(path==='/api/v1/staff/blog/terms/list')return route.fulfill({json:{results:[],page:1,hasMore:false}});
     return route.fulfill({status:501,json:{error:'Unexpected request'}});
   });
   await page.goto('/workspace/media');

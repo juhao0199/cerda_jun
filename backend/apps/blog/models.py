@@ -9,6 +9,8 @@ class Post(models.Model):
     draft = models.JSONField()
     published = models.JSONField(null=True, default=None)
     published_at = models.DateTimeField(null=True, default=None)
+    first_published_at = models.DateTimeField(null=True, default=None)
+    published_modified_at = models.DateTimeField(null=True, default=None)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -43,3 +45,38 @@ class CoverImage(models.Model):
     size_bytes = models.PositiveIntegerField(default=0)
     version = models.PositiveBigIntegerField(default=1)
     object_key = models.CharField(max_length=100, blank=True, default='')
+
+
+class EditorialTerm(models.Model):
+    kind = models.CharField(max_length=8)
+    name = models.CharField(max_length=80)
+    key = models.CharField(max_length=240)
+    active = models.BooleanField(default=True)
+    version = models.PositiveBigIntegerField(default=1)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['kind', 'key'], name='blog_term_unique'),
+                       models.CheckConstraint(condition=models.Q(kind__in=['category', 'tag', 'author']), name='blog_term_kind_valid')]
+
+
+class SlugAlias(models.Model):
+    slug = models.SlugField(max_length=100, unique=True)
+    post = models.ForeignKey(Post, on_delete=models.PROTECT, related_name='aliases')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class DiscoveryObservation(models.Model):
+    """Append-only human observations, not provider analytics."""
+    mode = models.CharField(max_length=3)
+    engine = models.CharField(max_length=40)
+    prompt = models.CharField(max_length=500)
+    target = models.CharField(max_length=160)
+    outcome = models.CharField(max_length=12)
+    evidence = models.CharField(max_length=1500)
+    actor_id = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=['mode', '-created_at'], name='blog_disc_mode_date_idx')]
+        constraints = [models.CheckConstraint(condition=models.Q(mode__in=['aeo','geo']), name='blog_disc_mode_valid'),
+                       models.CheckConstraint(condition=models.Q(outcome__in=['present','absent','inconclusive']), name='blog_disc_result_valid')]

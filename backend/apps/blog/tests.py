@@ -266,3 +266,74 @@ class BlogTests(TestCase):
             self.assertEqual(self.create(fields={**self.fields,'cover':ref}).status_code,201)
             self.assertEqual(self.change('publish',1).status_code,200)
             self.assertEqual(Client().get(self.public+path).content,objects[asset.object_key])
+
+    def test_editorial_directory_permissions_and_archived_assignments(self):
+        add = {'action':'create','kind':'author','name':'Example Writer'}
+        self.assertEqual(self.client.get(self.root+'terms/list/').status_code,403)
+        self.assertEqual(self.write('terms/change',add,self.staff).status_code,403)
+        self.assertEqual(self.write('terms/change',add,csrf=False).status_code,403)
+        term=self.write('terms/change',add).json()
+        self.assertEqual(self.write('terms/change',{**add,'name':'example writer'}).status_code,409)
+        self.assertEqual(self.create(fields={**self.fields,'author':'Unknown Writer'}).status_code,400)
+        self.assertEqual(self.create(self.staff,fields={**self.fields,'author':'example writer'}).status_code,201)
+        self.assertEqual(self.staff.get(self.root+'terms/list/?kind=tag&q=Design').json()['results'][0]['name'],'Design')
+        self.assertEqual(self.write('terms/change',{'action':'archive','id':term['id'],'version':1}).status_code,200)
+        self.assertEqual(self.staff.get(self.root+'terms/list/?kind=author&active=1&q=Example').json()['results'],[])
+        self.assertEqual(self.create(slug='new-article',fields={**self.fields,'author':'Example Writer'}).status_code,400)
+        self.assertEqual(self.change('save',1,self.staff,fields={**self.fields,'author':'Example Writer'}).status_code,200)
+        self.assertEqual(self.write('terms/change',{'action':'restore','id':term['id'],'version':1}).status_code,409)
+        self.assertEqual(self.write('terms/change',{'action':'restore','id':term['id'],'version':2}).status_code,200)
+
+    def test_published_seo_is_snapshot_and_dates_are_stable(self):
+        fields={**self.fields,'noindex':True,'focusKeyword':'private phrase','coverAlt':'Interface diagram'}
+        self.assertEqual(self.create(fields=fields).status_code,201)
+        self.assertEqual(self.change('publish',1).status_code,200)
+        initial=self.article().json()
+        self.assertTrue(initial['noindex']);self.assertEqual(initial['coverAlt'],'Interface diagram')
+        self.assertNotIn('focusKeyword',initial)
+        self.assertEqual(self.change('save',2,self.staff,fields={**fields,'noindex':False}).status_code,200)
+        self.assertEqual(self.article().json(),initial)
+        self.assertEqual(self.change('publish',3).status_code,200)
+        final=self.article().json()
+        self.assertFalse(final['noindex']);self.assertEqual(initial['publishedAt'],final['publishedAt'])
+        self.assertGreaterEqual(final['modifiedAt'],initial['modifiedAt'])
+        self.assertEqual(self.client.get(self.root+'seo/list/').status_code,403)
+        self.assertEqual(self.staff.get(self.root+'seo/list/?q=test-article').json()['results'][0]['focusKeyword'],'private phrase')
+        self.assertEqual(self.change('save',4,fields={**fields,'noindex':'true'}).status_code,400)
+
+    def test_slug_alias_reservation_and_private_visibility(self):
+        self.assertEqual(self.create().status_code,201)
+        self.assertEqual(self.change('rename',1,self.staff,newSlug='renamed-article').status_code,403)
+        self.assertEqual(self.change('rename',1,newSlug='renamed-article').status_code,200)
+        self.assertEqual(self.article().status_code,404)
+        self.assertEqual(self.create().status_code,409)
+        self.slug='renamed-article'
+        self.assertEqual(self.change('publish',2).status_code,200)
+        self.assertEqual(Client().get(self.public+'detail/test-article/').json(),{'redirectSlug':'renamed-article'})
+        self.assertEqual(self.change('rename',3,newSlug='final-article').status_code,200)
+        self.assertEqual(Client().get(self.public+'detail/test-article/').json(),{'redirectSlug':'final-article'})
+        self.assertEqual(Client().get(self.public+'detail/renamed-article/').json(),{'redirectSlug':'final-article'})
+        self.slug='final-article'
+        self.assertEqual(self.change('rename',4,newSlug='test-article').status_code,409)
+        self.assertEqual(self.change('archive',4).status_code,200)
+        self.assertEqual(Client().get(self.public+'detail/test-article/').status_code,404)
+        self.assertEqual(self.article().status_code,404)
+
+    def test_discovery_observations_are_private_separate_and_validated(self):
+        payload = {'mode':'aeo','engine':'ChatGPT Search','prompt':'Who provides automation?',
+                   'target':'/','outcome':'absent','evidence':'Manual sample, no answer seen.'}
+        self.assertEqual(self.write('discovery/create',payload,self.client).status_code,403)
+        self.assertEqual(self.write('discovery/create',payload,self.staff,csrf=False).status_code,403)
+        self.assertEqual(self.write('discovery/create',{**payload,'target':'https://example.com'},self.staff).status_code,400)
+        self.assertEqual(self.write('discovery/create',{**payload,'outcome':'unknown'},self.staff).status_code,400)
+        self.assertEqual(self.write('discovery/create',payload,self.staff).status_code,201)
+        self.assertEqual(self.write('discovery/create',{**payload,'mode':'geo','outcome':'present'},self.owner).status_code,201)
+        self.assertEqual(self.client.get(self.root+'discovery/list/?mode=aeo').status_code,403)
+        a=self.staff.get(self.root+'discovery/list/?mode=aeo').json()
+        g=self.owner.get(self.root+'discovery/list/?mode=geo').json()
+        self.assertEqual(a['counts'],{'absent':1,'inconclusive':0,'present':0})
+        self.assertEqual(g['counts'],{'absent':0,'inconclusive':0,'present':1})
+        self.assertEqual(a['results'][0]['prompt'],payload['prompt'])
+        self.assertNotIn('actor_id',a['results'][0])
+        self.assertEqual(self.staff.get(self.root+'discovery/list/?mode=seo').status_code,400)
+        self.assertEqual(SecurityEvent.objects.filter(action='blog.discovery.record').count(),2)

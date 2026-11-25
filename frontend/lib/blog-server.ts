@@ -14,7 +14,7 @@ export async function publicPosts(page=1):Promise<{results:PublicPost[];page:num
   if(!response.ok)throw new Error('Public blog is unavailable.');
   return response.json();
 }
-export async function publicArticle(slug:string):Promise<PublicArticle|null>{
+export async function publicArticle(slug:string):Promise<PublicArticle|{redirectSlug:string}|null>{
   if(!validSlug(slug))return null;
   const response=await request(`detail/${slug}/`);
   if(response.status===404)return null;
