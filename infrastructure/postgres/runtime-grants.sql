@@ -38,3 +38,7 @@ REVOKE UPDATE ON blog_competitor FROM cedar_runtime;
 GRANT UPDATE (active, version) ON blog_competitor TO cedar_runtime;
 REVOKE UPDATE ON blog_contentopportunity FROM cedar_runtime;
 GRANT UPDATE (status, version, post_id) ON blog_contentopportunity TO cedar_runtime;
+
+-- Competitor reports are immutable; classification is versioned.
+REVOKE UPDATE, DELETE ON blog_competitorintelligence FROM cedar_runtime;
+GRANT UPDATE (kind) ON blog_competitor TO cedar_runtime;

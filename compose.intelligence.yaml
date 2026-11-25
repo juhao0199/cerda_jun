@@ -1,0 +1,8 @@
+# Optional production overlay. Use only with an egress firewall that blocks private networks.
+services:
+  backend:
+    environment:
+      COMPETITOR_INTELLIGENCE_ENABLED: '1'
+    networks: [data, api, intelligence_egress]
+networks:
+  intelligence_egress: {}

@@ -453,3 +453,60 @@ class BlogTests(TestCase):
         self.assertEqual(self.write('competitors/change',change).status_code,200)
         self.assertEqual(self.write('competitors/change',change).status_code,409)
         self.assertEqual(self.write('competitors/gaps/create',{'promptId':'1','measurementId':'','competitorId':c['id'],'title':'Gap','brief':'Evidence','target':'','priority':'high'},self.staff).status_code,400)
+
+    @override_settings(COMPETITOR_INTELLIGENCE_ENABLED=True)
+    def test_intelligence_owner_scan_and_private_history(self):
+        from unittest.mock import patch
+        from .models import CompetitorIntelligence
+        c=self.write('competitors/create',{'name':'Reference','domain':'example.org','market':'SaaS'}).json()
+        root='competitors/intelligence/'
+        data={'id':c['id'],'variant':'apex'}
+        report={'host':'example.org','state':'sampled','discovered':1,'measured':1,'requests':2,'robots':'available','sitemap':'unavailable','notes':[],
+                'scope':'Bounded public HTML sample','pages':[{'path':'/','measured':True,'title':'Custom software','headings':[]}]}
+        with patch('apps.blog.intelligence.scan',return_value=report) as scanner:
+            self.assertEqual(self.write(root+'run',data,self.staff).status_code,403)
+            self.assertEqual(self.write(root+'run',data,self.owner,csrf=False).status_code,403)
+            self.assertEqual(self.write(root+'run',{**data,'variant':'https://127.0.0.1'}).status_code,400)
+            scanner.assert_not_called()
+            r=self.write(root+'run',data);self.assertEqual(r.status_code,201);scanner.assert_called_once_with('example.org','apex')
+        rid=r.json()['id'];self.assertEqual(CompetitorIntelligence.objects.count(),1)
+        self.assertEqual(self.staff.get(self.root+root+'history/',{'id':c['id']}).json()['results'][0]['id'],rid)
+        self.assertEqual(self.staff.get(self.root+root+'detail/',{'id':c['id'],'report':rid}).json()['report'],report)
+        self.assertEqual(self.client.get(self.root+root+'detail/',{'id':c['id'],'report':rid}).status_code,403)
+        compared=self.staff.get(self.root+root+'compare/',{'id':c['id'],'report':rid,'q':'custom software'}).json()
+        self.assertEqual(compared['competitorScanned'],1);self.assertEqual(len(compared['competitorMatches']),1)
+        self.assertEqual(self.staff.get(self.root+root+'detail/',{'id':str(int(c['id'])+1),'report':rid}).status_code,404)
+
+    def test_pro_history_preserves_snapshots_and_compares_owned_inventory(self):
+        from .models import CompetitorIntelligence
+        from .intelligence_engine import inspect_page
+        from .test_intelligence_engine import reply
+        c=self.write('competitors/create',{'name':'Reference','domain':'example.org','market':'SaaS'}).json()
+        def save(title, paths, version=2):
+            pages=[inspect_page(p,'example.org',reply(f'<html><head><title>{title}</title></head><body><main><h1>Business software</h1></main></body></html>'))[0] for p in paths]
+            report={'analysisVersion':version,'host':'example.org','state':'sampled','measured':len(pages),'discovered':len(pages),'pages':pages}
+            return CompetitorIntelligence.objects.create(competitor_id=c['id'],actor_id=1,report=report)
+        old=save('Before',['/','/old']);save('Legacy',['/'],version=1);new=save('After',['/','/new'])
+        root=self.root+'competitors/intelligence/'
+        response=self.staff.get(root+'detail/',{'id':c['id'],'report':str(new.pk)})
+        self.assertEqual(response.status_code,200)
+        data=response.json();self.assertEqual(data['report'],new.report);self.assertEqual(data['delta']['previousId'],str(old.pk))
+        self.assertEqual(data['delta']['notResampled'],['/old']);self.assertEqual(data['delta']['newlySampled'],['/new'])
+        self.assertEqual(data['delta']['changes'],[{'path':'/','fields':['title']}])
+        comparison=self.staff.get(root+'compare/',{'id':c['id'],'report':str(new.pk),'q':'business software'}).json()
+        self.assertEqual(comparison['ownSectionMatches'][0]['anchor'],'studio-operations')
+        new.refresh_from_db();self.assertNotIn('delta',new.report)
+
+    @override_settings(COMPETITOR_INTELLIGENCE_ENABLED=False)
+    def test_intelligence_disabled_and_classification_version(self):
+        from unittest.mock import patch
+        c=self.write('competitors/create',{'name':'Reference','domain':'example.org','market':'SaaS'}).json()
+        root='competitors/intelligence/'
+        data={'id':c['id'],'version':c['version'],'kind':'reference'}
+        self.assertEqual(c['kind'],'unclassified')
+        self.assertEqual(self.write(root+'classify',data,self.staff).status_code,403)
+        result=self.write(root+'classify',data);self.assertEqual(result.status_code,200);self.assertEqual(result.json()['kind'],'reference')
+        self.assertEqual(self.write(root+'classify',data).status_code,409)
+        with patch('apps.blog.intelligence.scan') as scan:
+            self.assertEqual(self.write(root+'run',{'id':c['id'],'variant':'apex'}).status_code,503);scan.assert_not_called()
+        self.assertFalse(self.staff.get(self.root+root+'history/',{'id':c['id']}).json()['enabled'])

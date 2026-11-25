@@ -142,6 +142,7 @@ class Competitor(models.Model):
     name = models.CharField(max_length=100)
     domain = models.CharField(max_length=253, unique=True)
     market = models.CharField(max_length=80)
+    kind = models.CharField(max_length=12, default="unclassified", choices=[("unclassified", "Unclassified"), ("direct", "Direct competitor"), ("indirect", "Indirect competitor"), ("reference", "Reference brand")])
     active = models.BooleanField(default=True)
     version = models.PositiveBigIntegerField(default=1)
     actor_id = models.PositiveBigIntegerField()
@@ -179,3 +180,11 @@ class ContentOpportunity(models.Model):
     class Meta:
         constraints = [models.CheckConstraint(condition=models.Q(priority__in=['high','medium','low']), name='blog_gap_priority_valid'),
                        models.CheckConstraint(condition=models.Q(status__in=['open','in_progress','done','dismissed']), name='blog_gap_status_valid')]
+
+
+class CompetitorIntelligence(models.Model):
+    """Immutable evidence from a bounded public website sample."""
+    competitor = models.ForeignKey(Competitor, on_delete=models.PROTECT, related_name='intelligence_reports')
+    report = models.JSONField()
+    actor_id = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
