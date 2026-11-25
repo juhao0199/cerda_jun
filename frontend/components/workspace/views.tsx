@@ -6,6 +6,7 @@ import { api, mutate, type Identity } from '@/lib/session-api';
 import BlogWorkspace from '@/components/blog';
 import {EditorialDirectory} from '@/components/blog/editorial';
 import {OptimizationCenter} from '@/components/blog/optimization-center';
+import {CompetitorCenter} from '@/components/blog/competitor-center';
 import {PromptMonitoring} from '@/components/blog/prompt-monitoring';
 import {TechnicalCenter} from '@/components/blog/technical-center';
 import {MediaLibrary} from '@/components/blog/media-library';
@@ -77,6 +78,7 @@ export function WorkspaceView({ section }: { section: Section }) {
     case 'seo':return <OptimizationCenter key="seo" mode="seo"/>;
     case 'aeo':return <OptimizationCenter key="aeo" mode="aeo"/>;
     case 'geo':return <OptimizationCenter key="geo" mode="geo"/>;
+    case 'competitors':return <CompetitorCenter owner={identity.role==='owner'}/>;
     case 'monitoring':return <PromptMonitoring owner={identity.role==='owner'}/>;
     case 'audit':return <TechnicalCenter key="audit" owner={identity.role==='owner'} mode="audit"/>;
     case 'crawlers':return <TechnicalCenter key="crawlers" owner={identity.role==='owner'} mode="crawlers"/>;

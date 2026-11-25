@@ -1,7 +1,18 @@
 from django.urls import path
-from . import views, images, media, editorial, discovery, technical, prompt_monitoring
+from . import views, images, media, editorial, discovery, technical, prompt_monitoring, competitors
 
 urlpatterns = [
+    path('competitors/coverage/', competitors.coverage),
+    path('competitors/list/', competitors.listing),
+    path('competitors/create/', competitors.create),
+    path('competitors/change/', competitors.change),
+    path('competitors/benchmark/', competitors.benchmark),
+    path('competitors/observe/', competitors.observe),
+    path('competitors/gaps/', competitors.gaps),
+    path('competitors/gaps/create/', competitors.create_gap),
+    path('competitors/gaps/change/', competitors.change_gap),
+    path('competitors/gaps/draft/', competitors.draft),
+
     path('monitoring/list/', prompt_monitoring.listing),
     path('monitoring/create/', prompt_monitoring.create),
     path('monitoring/change/', prompt_monitoring.change),
