@@ -22,3 +22,7 @@ REVOKE UPDATE, DELETE ON blog_slugalias FROM cedar_runtime;
 
 -- Human observations are append-only.
 REVOKE UPDATE, DELETE ON blog_discoveryobservation FROM cedar_runtime;
+
+-- Append-only technical reports and singleton crawler policy.
+REVOKE UPDATE, DELETE ON blog_siteaudit FROM cedar_runtime;
+REVOKE INSERT, DELETE ON blog_crawlerpolicy FROM cedar_runtime;

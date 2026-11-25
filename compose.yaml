@@ -19,6 +19,7 @@ services:
     env_file: .env
     environment:
       POSTGRES_HOST: db
+      SITE_AUDIT_ORIGIN: ${SITE_AUDIT_ORIGIN:-http://host.docker.internal:3000}
     command: ['python','manage.py','runserver','0.0.0.0:8000','--noreload']
     depends_on:
       db:

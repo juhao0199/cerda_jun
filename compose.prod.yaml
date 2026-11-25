@@ -45,6 +45,7 @@ services:
     environment:
       <<: *backend-env
       POSTGRES_USER: cedar_runtime
+      SITE_AUDIT_ORIGIN: http://frontend:3000
       POSTGRES_PASSWORD: ${CEDAR_RUNTIME_PASSWORD:?required}
     depends_on:
       migrate: {condition: service_completed_successfully}

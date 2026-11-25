@@ -12,6 +12,7 @@ if not SECRET_KEY or (not DEBUG and (len(SECRET_KEY) < 50 or SECRET_KEY.startswi
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 SITE_ORIGIN = os.getenv('SITE_ORIGIN', 'http://localhost:3000').rstrip('/')
 CSRF_TRUSTED_ORIGINS = [SITE_ORIGIN]
+SITE_AUDIT_ORIGIN = os.getenv("SITE_AUDIT_ORIGIN", "")
 CEDAR_MFA_KEY = os.getenv('CEDAR_MFA_KEY', '')
 try:
     Fernet(CEDAR_MFA_KEY.encode())

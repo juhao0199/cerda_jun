@@ -80,3 +80,21 @@ class DiscoveryObservation(models.Model):
         indexes = [models.Index(fields=['mode', '-created_at'], name='blog_disc_mode_date_idx')]
         constraints = [models.CheckConstraint(condition=models.Q(mode__in=['aeo','geo']), name='blog_disc_mode_valid'),
                        models.CheckConstraint(condition=models.Q(outcome__in=['present','absent','inconclusive']), name='blog_disc_result_valid')]
+
+
+class CrawlerPolicy(models.Model):
+    """Singleton; changes affect only public robots.txt, never authentication."""
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+    version = models.PositiveBigIntegerField(default=1)
+    directives = models.JSONField()
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.CheckConstraint(condition=models.Q(id=1), name='blog_crawler_singleton')]
+
+
+class SiteAudit(models.Model):
+    """Append-only measured reports; no fetched HTML or secrets retained."""
+    actor_id = models.PositiveBigIntegerField()
+    report = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)

@@ -1,6 +1,6 @@
 import type { Role } from '@/lib/session-api';
 
-export const sections = ['overview', 'leads', 'clients', 'quotations', 'blog', 'media', 'editorial', 'seo', 'aeo', 'geo', 'team', 'security', 'settings'] as const;
+export const sections = ['overview', 'leads', 'clients', 'quotations', 'blog', 'media', 'editorial', 'seo', 'aeo', 'geo', 'audit', 'crawlers', 'team', 'security', 'settings'] as const;
 export type Section = typeof sections[number];
 export type NavItem = { id: Section; label: string; href: string; roles: readonly Role[]; group: string };
 export const navigation: readonly NavItem[] = [
@@ -14,6 +14,8 @@ export const navigation: readonly NavItem[] = [
   { id: 'seo', label: 'SEO center', href: '/workspace/seo', roles: ['owner', 'staff'], group: 'Marketing' },
   { id: 'aeo', label: 'AEO center', href: '/workspace/aeo', roles: ['owner', 'staff'], group: 'Marketing' },
   { id: 'geo', label: 'GEO center', href: '/workspace/geo', roles: ['owner', 'staff'], group: 'Marketing' },
+  { id: 'audit', label: 'Technical audit', href: '/workspace/audit', roles: ['owner', 'staff'], group: 'Marketing' },
+  { id: 'crawlers', label: 'AI crawlers', href: '/workspace/crawlers', roles: ['owner', 'staff'], group: 'Marketing' },
   { id: 'team', label: 'Team & access', href: '/workspace/team', roles: ['owner'], group: 'Administration' },
   { id: 'security', label: 'Security activity', href: '/workspace/security', roles: ['owner'], group: 'Administration' },
   { id: 'settings', label: 'Account settings', href: '/workspace/settings', roles: ['owner', 'staff', 'client'], group: 'Administration' },

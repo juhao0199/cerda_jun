@@ -1,7 +1,12 @@
 from django.urls import path
-from . import views, images, media, editorial, discovery
+from . import views, images, media, editorial, discovery, technical
 
 urlpatterns = [
+    path('technical/policy/', technical.policy),
+    path('technical/policy/change/', technical.change_policy),
+    path('technical/history/', technical.history),
+    path('technical/report/<int:audit_id>/', technical.detail),
+    path('technical/run/', technical.run),
     path('discovery/list/', discovery.listing),
     path('discovery/create/', discovery.create),
     path('terms/list/', editorial.terms),
