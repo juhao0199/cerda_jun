@@ -27,6 +27,7 @@ export function WorkspaceIcon({ name }: { name: Section | 'menu' | 'logout' | 'a
     clients: <><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m2-15a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 4v2"/></>,
     quotations: <><path d="M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h8"/></>,
     blog: <><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></>,
+    media: <><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="2"/><path d="m3 17 6-5 4 4 3-3 5 4"/></>,
     team: <><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m4-11v6m-3-3h6"/></>,
     security: <><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m9 12 2 2 4-4"/></>,
     settings: <><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/><circle cx="12" cy="12" r="7"/></>,
@@ -35,6 +36,8 @@ export function WorkspaceIcon({ name }: { name: Section | 'menu' | 'logout' | 'a
   };
   return <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
+
+function allowWorkspaceLeave(){return window.dispatchEvent(new Event('cedar:workspace-leave',{cancelable:true}));}
 
 export function WorkspaceShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -62,7 +65,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('pageshow', restore);
   }, []);
   async function signOut() {
-    if (busy.current) return;
+    if (busy.current || !allowWorkspaceLeave()) return;
     busy.current = true; setPending(true); setActionError('');
     try { await mutate('auth/logout'); setSession(null); window.location.replace('/login'); }
     catch (e) { setActionError(handleSessionError(e, 'Unable to sign out. Please retry.')); }
@@ -77,7 +80,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
       <aside className={styles.sidebar} id="workspace-sidebar" aria-label="Workspace sidebar">
         <div className={styles.brand}><img src="/logo.svg" alt="" width={30} height={30}/><div className={styles.navText}><strong>Cedar &amp; Cursor</strong><small>Studio workspace</small></div></div>
         <nav aria-label="Workspace navigation" className={styles.navigation}>
-          {[...new Set(items.map(item => item.group))].map(group => <div className={styles.group} key={group}><p className={styles.groupLabel}>{group}</p>{items.filter(item => item.group === group).map(item => <Link key={item.id} href={item.href} prefetch={false} aria-current={pathname === item.href ? 'page' : undefined} title={item.label} aria-label={item.label} onClick={() => setOpen(false)}><WorkspaceIcon name={item.id}/><span className={styles.navText}>{item.label}</span></Link>)}</div>)}
+          {[...new Set(items.map(item => item.group))].map(group => <div className={styles.group} key={group}><p className={styles.groupLabel}>{group}</p>{items.filter(item => item.group === group).map(item => <Link key={item.id} href={item.href} prefetch={false} aria-current={pathname === item.href ? 'page' : undefined} title={item.label} aria-label={item.label} onClick={e => { if (item.href!==pathname&&!e.metaKey&&!e.ctrlKey&&!e.shiftKey&&!e.altKey&&e.button===0&&!allowWorkspaceLeave()){e.preventDefault();return;}setOpen(false); }}><WorkspaceIcon name={item.id}/><span className={styles.navText}>{item.label}</span></Link>)}</div>)}
         </nav>
         <div className={styles.account}><div className={styles.avatar}>{identity.username.slice(0,1).toUpperCase()}</div><div className={styles.navText}><strong>{identity.username}</strong><small>{identity.role}</small></div><button type="button" className={styles.iconButton} aria-label="Sign out" title="Sign out" disabled={pending} onClick={signOut}><WorkspaceIcon name="logout"/></button></div>
       </aside>
@@ -86,7 +89,7 @@ export function WorkspaceShell({ children }: { children: ReactNode }) {
           <button className={`${styles.iconButton} ${styles.desktopToggle}`} type="button" aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-expanded={!collapsed} aria-controls="workspace-sidebar" onClick={() => setCollapsed(v => !v)}><WorkspaceIcon name="collapse"/></button>
           <button className={`${styles.iconButton} ${styles.mobileToggle}`} type="button" aria-label="Toggle workspace navigation" aria-expanded={open} aria-controls="workspace-sidebar" onClick={() => setOpen(v => !v)}><WorkspaceIcon name="menu"/></button>
           <div className={styles.breadcrumb}>Workspace <span>/</span> <strong>{current?.label || 'Page'}</strong></div>
-          <Link href="/" className={styles.siteLink}>View website ↗</Link>
+          <Link href="/" className={styles.siteLink} onClick={e=>{if(!e.metaKey&&!e.ctrlKey&&!e.shiftKey&&!e.altKey&&e.button===0&&!allowWorkspaceLeave())e.preventDefault();}}>View website ↗</Link>
         </div>
         <main id="workspace-main" className={styles.main}>
           {actionError && <p className={styles.error} role="alert">{actionError}</p>}

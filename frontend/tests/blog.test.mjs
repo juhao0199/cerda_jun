@@ -19,3 +19,17 @@ test('uploaded covers use separate private and public paths',()=>{
   assert.equal(coverPath('upload:'+id+'\n'),null);
   assert.equal(coverPath('upload:../../private'),null);
 });
+
+import {legacyDocument,safeLink,wordCount,hasContent} from '../lib/rich-document.ts';
+test('legacy article conversion preserves headings and line breaks',()=>{
+  const d=legacyDocument([{heading:'Heading',body:'A first line\nSecond line\n\nNext paragraph'}]);
+  assert.equal(d.content[0].attrs.level,2);
+  assert.equal(d.content[1].content[1].type,'hardBreak');
+  assert.equal(d.content[2].content[0].text,'Next paragraph');
+  assert.equal(wordCount(d),8);assert.equal(hasContent(d),true);
+  assert.equal(hasContent(legacyDocument([{heading:'',body:''}])),false);
+});
+test('rich links use a narrow URL allowlist',()=>{
+  for(const url of ['javascript:alert(1)','data:text/html,x','//example.com','/\\example.com','https://example.com\n','https://a:b@example.com','http:/example.com'])assert.equal(safeLink(url),false);
+  assert.equal(safeLink('/blog/intro'),true);assert.equal(safeLink('https://example.com'),true);
+});

@@ -10,4 +10,8 @@ REVOKE DELETE ON quotations_quotation FROM cedar_runtime;
 REVOKE UPDATE, DELETE ON blog_revision FROM cedar_runtime;
 REVOKE DELETE ON blog_post FROM cedar_runtime;
 
-REVOKE UPDATE, DELETE ON blog_coverimage FROM cedar_runtime;
+-- Metadata changes and reference-checked deletes only; image bytes stay immutable.
+REVOKE UPDATE ON blog_coverimage FROM cedar_runtime;
+GRANT UPDATE (filename, alt, caption, version) ON blog_coverimage TO cedar_runtime;
+GRANT DELETE ON blog_coverimage TO cedar_runtime;
+-- PostgreSQL SELECT FOR UPDATE requires UPDATE privilege on at least one column.

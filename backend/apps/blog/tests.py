@@ -175,3 +175,94 @@ class BlogTests(TestCase):
             self.assertEqual(self.upload().status_code, 201)
         self.assertEqual(self.upload().status_code, 429)
         self.assertEqual(SecurityEvent.objects.filter(action='blog.cover.upload').count(), 5)
+
+    def test_rich_document_and_inline_image_publication(self):
+        ref = self.upload().json()['cover']
+        image = {'type':'studioImage','attrs':{'ref':ref,'alt':'Architecture diagram','caption':'System overview'}}
+        paragraph = {'type':'paragraph','content':[{'type':'text','text':'word '*6000,'marks':[{'type':'bold'}]}]}
+        fields = {**self.fields,'sections':[],'document':{'type':'doc','content':[paragraph,image]}}
+        self.assertEqual(self.create(fields=fields).status_code,201)
+        path = self.public+'cover/'+ref[7:]+'/'
+        self.assertEqual(Client().get(path).status_code,404)
+        self.assertEqual(self.change('publish',1).status_code,200)
+        self.assertEqual(self.article().json()['document']['content'][1],image)
+        self.assertEqual(self.article().json()['minutes'],30)
+        self.assertEqual(Client().get(path).status_code,200)
+        edited = {**fields,'document':{'type':'doc','content':[paragraph]}}
+        self.assertEqual(self.change('save',2,self.staff,fields=edited).status_code,200)
+        self.assertEqual(Client().get(path).status_code,200)
+        self.assertEqual(self.change('publish',3).status_code,200)
+        self.assertEqual(Client().get(path).status_code,404)
+        self.assertEqual(self.owner.get(self.root+'cover/'+ref[7:]+'/').status_code,200)
+        self.assertEqual(self.owner.get(self.root+f'revision/{self.slug}/2/').json()['snapshot']['document']['content'][1],image)
+
+    def test_rich_document_invalid_reference_and_request_limit(self):
+        image = {'type':'studioImage','attrs':{'ref':'upload:12345678-1234-1234-1234-123456789abc','alt':'Diagram','caption':''}}
+        fields = {**self.fields,'sections':[],'document':{'type':'doc','content':[image]}}
+        self.assertEqual(self.create(fields=fields).status_code,400)
+        self.assertEqual(self.create(fields={**fields,'document':{'type':'doc','content':[{'type':'script','text':'x'}]}}).status_code,400)
+        self.assertEqual(self.create(fields={**self.fields,'summary':'x'*(256*1024)}).status_code,413)
+        self.assertEqual(self.create().status_code,201)
+
+    def test_media_metadata_permissions_and_safe_delete(self):
+        from .models import CoverImage
+        ref = self.upload(browser=self.staff).json()['cover']
+        image_id = ref[7:]
+        detail = 'media/detail/'+image_id+'/'
+        self.assertEqual(self.client.get(self.root+'media/list/').status_code, 403)
+        self.assertEqual(Client().get(self.root+detail).status_code, 401)
+        self.assertEqual(self.staff.get(self.root+'media/list/').json()['count'], 1)
+        self.assertEqual(self.staff.get(self.root+'media/list/').json()['bytes'], len(CoverImage.objects.get(pk=image_id).data))
+        payload = {'id':image_id,'version':1,'action':'edit','filename':'Architecture diagram','alt':'System diagram','caption':'Overview'}
+        self.assertEqual(self.write('media/change',payload,self.staff,csrf=False).status_code,403)
+        self.assertEqual(self.write('media/change',payload,self.staff).status_code,200)
+        self.assertEqual(self.write('media/change',payload,self.staff).status_code,409)
+        self.assertEqual(self.staff.get(self.root+'media/list/?q=Architecture').json()['results'][0]['id'],image_id)
+        delete={'id':image_id,'version':2,'action':'delete'}
+        self.assertEqual(self.write('media/change',delete,self.staff).status_code,403)
+        self.assertEqual(self.write('media/change',delete).status_code,200)
+        self.assertEqual(self.owner.get(self.root+detail).status_code,404)
+        self.assertEqual(self.create(fields={**self.fields,'cover':ref}).status_code,400)
+
+    def test_media_retains_history_even_after_reference_removed(self):
+        ref=self.upload().json()['cover']; image_id=ref[7:]
+        image={'type':'studioImage','attrs':{'ref':ref,'alt':'Diagram','caption':''}}
+        fields={**self.fields,'sections':[],'document':{'type':'doc','content':[image]}}
+        self.assertEqual(self.create(fields=fields).status_code,201)
+        delete={'id':image_id,'version':1,'action':'delete'}
+        self.assertEqual(self.write('media/change',delete).status_code,409)
+        self.assertEqual(self.change('save',1,fields=self.fields).status_code,200)
+        usage=self.owner.get(self.root+'media/detail/'+image_id+'/').json()
+        self.assertEqual(usage['articleCount'],0)
+        self.assertEqual(usage['revisionCount'],1)
+        self.assertEqual(self.write('media/change',delete).status_code,409)
+
+    def test_media_crop_copy_preserves_source(self):
+        ref=self.upload().json()['cover']; image_id=ref[7:]
+        payload={'id':image_id,'ratio':'square','rotation':90}
+        result=self.write('media/derive',payload,self.staff)
+        self.assertEqual(result.status_code,201)
+        self.assertNotEqual(result.json()['id'],image_id)
+        self.assertEqual((result.json()['width'],result.json()['height']),(32,32))
+        original=self.owner.get(self.root+'media/detail/'+image_id+'/').json()
+        self.assertEqual((original['width'],original['height']),(64,32))
+        self.assertEqual(self.write('media/derive',{**payload,'rotation':45}).status_code,400)
+
+    def test_media_s3_storage_private_and_failure(self):
+        from unittest.mock import patch
+        from .models import CoverImage
+        from .object_storage import StorageError
+        with patch('apps.blog.object_storage.enabled',return_value=True), patch('apps.blog.object_storage.put',side_effect=StorageError('test')):
+            self.assertEqual(self.upload().status_code,503)
+            self.assertEqual(CoverImage.objects.count(),0)
+        objects={}
+        def put(image_id,data):
+            key=f'blog/images/{image_id}.jpg';objects[key]=data;return key
+        with patch('apps.blog.object_storage.enabled',return_value=True), patch('apps.blog.object_storage.put',side_effect=put), patch('apps.blog.object_storage.get',side_effect=objects.__getitem__):
+            ref=self.upload().json()['cover']; asset=CoverImage.objects.get(pk=ref[7:]);path='cover/'+ref[7:]+'/'
+            self.assertEqual(bytes(asset.data),b'')
+            self.assertEqual(self.owner.get(self.root+path).content,objects[asset.object_key])
+            self.assertEqual(Client().get(self.public+path).status_code,404)
+            self.assertEqual(self.create(fields={**self.fields,'cover':ref}).status_code,201)
+            self.assertEqual(self.change('publish',1).status_code,200)
+            self.assertEqual(Client().get(self.public+path).content,objects[asset.object_key])

@@ -13,6 +13,7 @@ from apps.accounts.security import audit
 from apps.inquiries.crm import locked_role, pagination
 from .content import normalize, slug_value, minutes
 from .models import Post, Revision, CoverImage
+from .rich_content import MAX_JSON, normalize_document
 
 
 # Blog content has its own bounded JSON budget; do not relax auth/CRM limits.
@@ -26,11 +27,17 @@ def blog_post(view):
         if request.content_type != 'application/json':
             return fail('Expected JSON.', 415)
         try:
-            if len(request.body) > 23000:
-                return fail('Article request too large (23 KB).', 413)
-            data = json.loads(request.body)
+            length = int(request.META.get('CONTENT_LENGTH') or '0')
+            if length < 0:
+                return fail('Invalid request length.', 400)
+            if length > MAX_JSON:
+                return fail('Article request too large (256 KB).', 413)
+            raw = request.read(MAX_JSON + 1)
+            if len(raw) > MAX_JSON:
+                return fail('Article request too large (256 KB).', 413)
+            data = json.loads(raw)
         except RequestDataTooBig:
-            return fail('Article request too large (23 KB).', 413)
+            return fail('Article request too large (256 KB).', 413)
         except (ValueError, UnicodeError, RecursionError):
             return fail('Invalid request.', 400)
         if not isinstance(data, dict):
@@ -41,7 +48,15 @@ def blog_post(view):
 
 def cover_exists(fields):
     cover = fields['cover']
-    return not cover.startswith('upload:') or CoverImage.objects.filter(pk=cover[7:]).exists()
+    refs = set()
+    if cover.startswith('upload:'):
+        refs.add(cover)
+    if 'document' in fields:
+        _, inline_refs = normalize_document(fields['document'])
+        refs.update(inline_refs)
+    # Lock in deterministic order; deletion locks the same image before checking references.
+    ids = list(CoverImage.objects.select_for_update().filter(pk__in=[ref[7:] for ref in refs]).order_by('pk').values_list('pk', flat=True))
+    return len(ids) == len(refs)
 
 
 def row(post):
@@ -67,6 +82,8 @@ def public_row(post, full=False):
               'publishedAt': post.published_at.isoformat()}
     if full:
         result.update({k: fields[k] for k in ('sections', 'tags', 'seoTitle', 'seoDescription')})
+        if 'document' in fields:
+            result['document'] = fields['document']
     return result
 
 
@@ -136,7 +153,7 @@ def create(request, data):
         if not locked_role(request):
             return fail('Access denied.', 403)
         if not cover_exists(fields):
-            return fail('Cover image not found.', 400)
+            return fail('Article image not found.', 400)
         post, created = Post.objects.get_or_create(slug=slug, defaults={'draft': fields})
         if not created:
             return fail('Slug already exists. Open the existing article or use a different slug.', 409)
@@ -177,11 +194,11 @@ def change(request, data):
             return fail('Restore the article before editing or publishing.', 409)
         elif action == 'save':
             if not cover_exists(fields):
-                return fail('Cover image not found.', 400)
+                return fail('Article image not found.', 400)
             post.draft = fields
         elif action == 'publish':
             if not cover_exists(post.draft):
-                return fail('Cover image not found.', 400)
+                return fail('Article image not found.', 400)
             post.status = 'published'
             post.published = post.draft
             post.published_at = timezone.now()
