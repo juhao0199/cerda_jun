@@ -26,3 +26,7 @@ REVOKE UPDATE, DELETE ON blog_discoveryobservation FROM cedar_runtime;
 -- Append-only technical reports and singleton crawler policy.
 REVOKE UPDATE, DELETE ON blog_siteaudit FROM cedar_runtime;
 REVOKE INSERT, DELETE ON blog_crawlerpolicy FROM cedar_runtime;
+
+-- Prompt definitions are retained and observation evidence is append-only.
+REVOKE DELETE ON blog_trackedprompt FROM cedar_runtime;
+REVOKE UPDATE, DELETE ON blog_promptmeasurement FROM cedar_runtime;

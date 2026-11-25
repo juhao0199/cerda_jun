@@ -98,3 +98,40 @@ class SiteAudit(models.Model):
     actor_id = models.PositiveBigIntegerField()
     report = models.JSONField()
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+
+class TrackedPrompt(models.Model):
+    """Immutable question and test context; archive to retire a test definition."""
+    question = models.CharField(max_length=500)
+    language = models.CharField(max_length=40)
+    market = models.CharField(max_length=80)
+    intent = models.CharField(max_length=20)
+    key = models.CharField(max_length=64, unique=True)
+    cadence_days = models.PositiveSmallIntegerField(default=7)
+    engines = models.JSONField()
+    active = models.BooleanField(default=True, db_index=True)
+    version = models.PositiveBigIntegerField(default=1)
+    actor_id = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class PromptMeasurement(models.Model):
+    """Append-only, human-observed result; never interpreted as provider analytics."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    prompt = models.ForeignKey(TrackedPrompt, on_delete=models.PROTECT, related_name='measurements')
+    engine = models.CharField(max_length=40)
+    observed_at = models.DateTimeField()
+    context = models.CharField(max_length=250)
+    answer = models.CharField(max_length=12)
+    brand = models.CharField(max_length=12)
+    citation = models.CharField(max_length=12)
+    sources = models.JSONField(default=list)
+    evidence = models.CharField(max_length=1500)
+    actor_id = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [models.Index(fields=['prompt', 'engine', '-observed_at'], name='blog_prompt_engine_time_idx')]
+        constraints = [models.CheckConstraint(condition=models.Q(answer__in=['present','absent','inconclusive']), name='blog_measure_answer_valid'),
+                       models.CheckConstraint(condition=models.Q(brand__in=['present','absent','inconclusive']), name='blog_measure_brand_valid'),
+                       models.CheckConstraint(condition=models.Q(citation__in=['present','absent','inconclusive']), name='blog_measure_cite_valid')]

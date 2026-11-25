@@ -371,3 +371,43 @@ class BlogTests(TestCase):
         self.assertEqual(self.client.get(self.root+'technical/report/'+rid+'/').status_code,403)
         self.assertEqual(self.staff.get(self.root+'technical/report/'+rid+'/').json()['report']['policyVersion'],'1')
         self.assertEqual(self.staff.get(self.root+'technical/history/').json()['results'][0]['id'],rid)
+
+    def test_prompt_monitoring_registry_and_measurement(self):
+        import uuid
+        from django.utils import timezone
+        from .models import PromptMeasurement
+        form={'question':'Which software studios serve SMEs?','language':'English','market':'Myanmar','intent':'commercial','engines':'ChatGPT Search,Perplexity','cadenceDays':'7'}
+        created=self.write('monitoring/create',form,self.staff)
+        self.assertEqual(created.status_code,201)
+        p=created.json(); self.assertTrue(all(c['due'] for c in p['checks']))
+        self.assertEqual(self.write('monitoring/create',{**form,'question':form['question'].upper()},self.staff).status_code,409)
+        payload={'id':p['id'],'requestId':str(uuid.uuid4()),'engine':'ChatGPT Search','observedAt':timezone.now().isoformat(), 'context':'Fresh search session, Myanmar', 'answer':'present','brand':'absent','citation':'present','sources':'https://cedarandcursor.com/blog/practical-ai-for-business','evidence':'Reported source link without brand name.'}
+        self.assertEqual(self.write('monitoring/record',{**payload,'sources':'https://cedarandcursor.com.other.test/'},self.staff).status_code,400)
+        result=self.write('monitoring/record',payload,self.staff)
+        self.assertEqual(result.status_code,201)
+        self.assertEqual(self.write('monitoring/record',payload,self.staff).status_code,200)
+        self.assertEqual(self.write('monitoring/record',{**payload,'brand':'present'},self.staff).status_code,409)
+        self.assertEqual(PromptMeasurement.objects.count(),1)
+        h=self.staff.get(self.root+'monitoring/history/',{'id':p['id'],'days':'all'}).json()
+        self.assertEqual(h['metrics']['citation_present'],1)
+        self.assertEqual(h['metrics']['brand_absent'],1)
+        self.assertEqual(h['citations'],[{'url':'https://cedarandcursor.com/blog/practical-ai-for-business','checks':1}])
+        self.assertFalse(h['prompt']['checks'][0]['due'])
+        self.assertTrue(h['prompt']['checks'][1]['due'])
+        self.assertEqual(self.write('monitoring/change',{'id':p['id'],'version':p['version'],'action':'archive'},self.staff).status_code,403)
+        self.assertEqual(self.write('monitoring/change',{'id':p['id'],'version':p['version'],'action':'archive'}).status_code,200)
+        self.assertEqual(self.write('monitoring/record',{**payload,'requestId':str(uuid.uuid4())},self.staff).status_code,409)
+        self.assertEqual(self.staff.get(self.root+'monitoring/history/',{'id':p['id']}).json()['metrics']['total'],1)
+        self.assertEqual(self.write('monitoring/change',{'id':p['id'],'version':p['version'],'action':'restore'}).status_code,409)
+
+    def test_prompt_monitoring_permissions_and_validation(self):
+        form={'question':'What does an AI studio do?','language':'English','market':'Thailand','intent':'informational','engines':'Perplexity','cadenceDays':'14'}
+        self.assertEqual(Client().get(self.root+'monitoring/list/').status_code,401)
+        self.assertEqual(self.client.get(self.root+'monitoring/list/').status_code,403)
+        self.assertEqual(self.client.get(self.root+'monitoring/history/',{'id':'1'}).status_code,403)
+        self.assertEqual(self.write('monitoring/create',form,self.client).status_code,403)
+        self.assertEqual(self.write('monitoring/create',form,csrf=False).status_code,403)
+        self.assertEqual(self.write('monitoring/create',form,origin='https://elsewhere.test').status_code,403)
+        self.assertEqual(self.write('monitoring/create',{**form,'engines':'Invalid'}).status_code,400)
+        self.assertEqual(self.write('monitoring/create',{**form,'active':'false'}).status_code,400)
+        self.assertEqual(self.owner.get(self.root+'monitoring/history/',{'id':'0'}).status_code,400)
