@@ -1,7 +1,12 @@
 from django.urls import path
-from . import views, images, media, editorial, discovery, technical
+from . import views, images, media, editorial, discovery, technical, prompt_monitoring
 
 urlpatterns = [
+    path('monitoring/list/', prompt_monitoring.listing),
+    path('monitoring/create/', prompt_monitoring.create),
+    path('monitoring/change/', prompt_monitoring.change),
+    path('monitoring/history/', prompt_monitoring.history),
+    path('monitoring/record/', prompt_monitoring.record),
     path('technical/policy/', technical.policy),
     path('technical/policy/change/', technical.change_policy),
     path('technical/history/', technical.history),
