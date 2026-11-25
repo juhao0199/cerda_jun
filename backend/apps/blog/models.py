@@ -135,3 +135,47 @@ class PromptMeasurement(models.Model):
         constraints = [models.CheckConstraint(condition=models.Q(answer__in=['present','absent','inconclusive']), name='blog_measure_answer_valid'),
                        models.CheckConstraint(condition=models.Q(brand__in=['present','absent','inconclusive']), name='blog_measure_brand_valid'),
                        models.CheckConstraint(condition=models.Q(citation__in=['present','absent','inconclusive']), name='blog_measure_cite_valid')]
+
+
+class Competitor(models.Model):
+    """Stable identity; archive rather than repurpose an observed brand."""
+    name = models.CharField(max_length=100)
+    domain = models.CharField(max_length=253, unique=True)
+    market = models.CharField(max_length=80)
+    active = models.BooleanField(default=True)
+    version = models.PositiveBigIntegerField(default=1)
+    actor_id = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class CompetitorObservation(models.Model):
+    competitor = models.ForeignKey(Competitor, on_delete=models.PROTECT, related_name='observations')
+    measurement = models.ForeignKey(PromptMeasurement, on_delete=models.PROTECT, related_name='competitor_observations')
+    brand = models.CharField(max_length=12)
+    cited_sources = models.JSONField(default=list)
+    evidence = models.CharField(max_length=1000)
+    actor_id = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['competitor','measurement'], name='blog_comp_measure_unique'),
+                       models.CheckConstraint(condition=models.Q(brand__in=['present','absent','inconclusive']), name='blog_comp_brand_valid')]
+
+
+class ContentOpportunity(models.Model):
+    prompt = models.ForeignKey(TrackedPrompt, on_delete=models.PROTECT, related_name='opportunities')
+    measurement = models.ForeignKey(PromptMeasurement, null=True, blank=True, on_delete=models.PROTECT)
+    competitor = models.ForeignKey(Competitor, null=True, blank=True, on_delete=models.PROTECT)
+    title = models.CharField(max_length=160)
+    brief = models.CharField(max_length=1500)
+    target = models.CharField(max_length=160, blank=True, default='')
+    priority = models.CharField(max_length=8)
+    status = models.CharField(max_length=12, default='open')
+    post = models.OneToOneField(Post, null=True, blank=True, on_delete=models.PROTECT)
+    version = models.PositiveBigIntegerField(default=1)
+    actor_id = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.CheckConstraint(condition=models.Q(priority__in=['high','medium','low']), name='blog_gap_priority_valid'),
+                       models.CheckConstraint(condition=models.Q(status__in=['open','in_progress','done','dismissed']), name='blog_gap_status_valid')]

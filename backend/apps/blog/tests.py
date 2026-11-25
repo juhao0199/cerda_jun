@@ -411,3 +411,45 @@ class BlogTests(TestCase):
         self.assertEqual(self.write('monitoring/create',{**form,'engines':'Invalid'}).status_code,400)
         self.assertEqual(self.write('monitoring/create',{**form,'active':'false'}).status_code,400)
         self.assertEqual(self.owner.get(self.root+'monitoring/history/',{'id':'0'}).status_code,400)
+
+    def test_competitor_paired_evidence_and_opportunity_draft(self):
+        import uuid
+        from django.utils import timezone
+        from .models import CompetitorObservation, ContentOpportunity
+        p=self.write('monitoring/create',{'question':'Which studios serve SMEs?','language':'English','market':'Myanmar','intent':'commercial','engines':'ChatGPT Search','cadenceDays':'7'},self.staff).json()
+        measurement={'id':p['id'],'requestId':str(uuid.uuid4()),'engine':'ChatGPT Search','observedAt':timezone.now().isoformat(),'context':'Fresh session','answer':'present','brand':'absent','citation':'absent','sources':'https://www.example.org/service\nhttps://example.org.other.com/','evidence':'Recorded response.'}
+        self.assertEqual(self.write('monitoring/record',measurement,self.staff).status_code,201)
+        form={'name':'Example Studio','domain':'example.org','market':'Myanmar'}
+        self.assertEqual(self.write('competitors/create',form,self.staff).status_code,403)
+        c=self.write('competitors/create',form).json()
+        self.assertEqual(self.write('competitors/create',{**form,'domain':'www.example.org'}).status_code,409)
+        o={'id':c['id'],'measurementId':measurement['requestId'],'brand':'present','evidence':'Named competitor.'}
+        self.assertEqual(self.write('competitors/observe',o,self.staff,csrf=False).status_code,403)
+        self.assertEqual(self.write('competitors/observe',o,self.staff).status_code,201)
+        self.assertEqual(self.write('competitors/observe',o,self.staff).status_code,409)
+        self.assertEqual(CompetitorObservation.objects.get().cited_sources,['https://www.example.org/service'])
+        report=self.staff.get(self.root+'competitors/benchmark/',{'id':c['id'],'days':'all'}).json()
+        self.assertEqual(report['metrics']['competitorOnly'],1);self.assertEqual(report['metrics']['citationGapSignals'],1)
+        gap={'promptId':p['id'],'measurementId':measurement['requestId'],'competitorId':c['id'],'title':'New guide','brief':'PRIVATE COMPETITOR BRIEF','target':'','priority':'high'}
+        response=self.write('competitors/gaps/create',gap,self.staff);self.assertEqual(response.status_code,201)
+        g=response.json();draft={'id':g['id'],'version':g['version'],'slug':'new-sme-guide','title':'SME Guide','summary':'Public summary','category':'Web','body':'Public draft text'}
+        self.assertEqual(self.write('competitors/gaps/draft',draft,self.staff).status_code,201)
+        self.assertEqual(self.write('competitors/gaps/draft',draft,self.staff).status_code,409)
+        post=Post.objects.get(slug='new-sme-guide');self.assertEqual(post.status,'draft');self.assertIsNone(post.published)
+        self.assertNotIn('PRIVATE COMPETITOR BRIEF',str(post.draft));self.assertEqual(ContentOpportunity.objects.get().post_id,post.pk)
+        self.assertEqual(Client().get(self.public+'detail/new-sme-guide/').status_code,404)
+        self.assertEqual(self.staff.get(self.root+'competitors/coverage/',{'q':'Public draft text'}).json()['matchCount'],0)
+        self.assertEqual(self.write('change',{'slug':post.slug,'version':1,'action':'publish'},self.owner).status_code,200)
+        self.assertEqual(self.staff.get(self.root+'competitors/coverage/',{'q':'Public draft text'}).json()['matchCount'],1)
+
+    def test_competitor_permissions_and_version_guards(self):
+        for path in ('list','benchmark','gaps','coverage'):
+            self.assertEqual(self.client.get(self.root+'competitors/'+path+'/').status_code,403)
+        form={'name':'Example Studio','domain':'cedarandcursor.com','market':'Myanmar'}
+        self.assertEqual(self.write('competitors/create',form).status_code,400)
+        c=self.write('competitors/create',{**form,'domain':'example.org'}).json()
+        change={'id':c['id'],'version':c['version'],'action':'archive'}
+        self.assertEqual(self.write('competitors/change',change,self.staff).status_code,403)
+        self.assertEqual(self.write('competitors/change',change).status_code,200)
+        self.assertEqual(self.write('competitors/change',change).status_code,409)
+        self.assertEqual(self.write('competitors/gaps/create',{'promptId':'1','measurementId':'','competitorId':c['id'],'title':'Gap','brief':'Evidence','target':'','priority':'high'},self.staff).status_code,400)

@@ -1,0 +1,10 @@
+{
+  "--sunlit-bg": "#241a16",
+  "--sunlit-ink": "#ffffff",
+  "--sunlit-muted": "#ffffff",
+  "--sunlit-nav": "#e7ddd0",
+  "--sunlit-nav-ink": "#111111",
+  "--sunlit-cta": "#b18c5d",
+  "--sunlit-cta-ink": "#171311",
+  "--sunlit-hero-ink": "#f5eee4"
+}

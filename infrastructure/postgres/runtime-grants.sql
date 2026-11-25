@@ -30,3 +30,11 @@ REVOKE INSERT, DELETE ON blog_crawlerpolicy FROM cedar_runtime;
 -- Prompt definitions are retained and observation evidence is append-only.
 REVOKE DELETE ON blog_trackedprompt FROM cedar_runtime;
 REVOKE UPDATE, DELETE ON blog_promptmeasurement FROM cedar_runtime;
+
+-- Competitor evidence remains immutable; registry and action queue retain history.
+REVOKE DELETE ON blog_competitor, blog_contentopportunity FROM cedar_runtime;
+REVOKE UPDATE, DELETE ON blog_competitorobservation FROM cedar_runtime;
+REVOKE UPDATE ON blog_competitor FROM cedar_runtime;
+GRANT UPDATE (active, version) ON blog_competitor TO cedar_runtime;
+REVOKE UPDATE ON blog_contentopportunity FROM cedar_runtime;
+GRANT UPDATE (status, version, post_id) ON blog_contentopportunity TO cedar_runtime;

@@ -33,6 +33,7 @@ export function WorkspaceIcon({ name }: { name: Section | 'menu' | 'logout' | 'a
     aeo: <><path d="M4 4h16v12H9l-5 4z"/><path d="M8 8h8m-8 4h5"/></>,
     geo: <><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18Z"/></>,
     audit: <><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m7 11 3 3 6-6M7 17h10"/></>,
+    competitors: <><path d="M4 20V11h4v9M10 20V4h4v16M16 20v-6h4v6M3 20h18"/></>,
     monitoring: <><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></>,
     crawlers: <><rect x="5" y="7" width="14" height="12" rx="3"/><path d="M12 3v4M2 11h3m14 0h3M9 11h.01M15 11h.01M9 15h6"/></>,
     team: <><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2m4-11v6m-3-3h6"/></>,
