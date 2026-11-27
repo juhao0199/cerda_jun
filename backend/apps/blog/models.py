@@ -188,3 +188,98 @@ class CompetitorIntelligence(models.Model):
     report = models.JSONField()
     actor_id = models.PositiveBigIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class WebsiteContent(models.Model):
+    """One seeded site-wide record. Public reads only the published snapshot."""
+    draft = models.JSONField(default=dict)
+    published = models.JSONField(default=dict)
+    version = models.PositiveBigIntegerField(default=1)
+    published_at = models.DateTimeField(null=True, blank=True)
+
+
+class WebsiteRevision(models.Model):
+    website = models.ForeignKey(WebsiteContent, on_delete=models.PROTECT, related_name='revisions')
+    version = models.PositiveBigIntegerField()
+    action = models.CharField(max_length=12)
+    snapshot = models.JSONField()
+    actor_id = models.PositiveBigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['website', 'version'], name='website_revision_version_unique')]
+
+
+class PublishingPlan(models.Model):
+    post = models.ForeignKey(Post, null=True, blank=True, on_delete=models.PROTECT, related_name='publishing_plans')
+    website = models.ForeignKey(WebsiteContent, null=True, blank=True, on_delete=models.PROTECT, related_name='publishing_plans')
+    target_version = models.PositiveBigIntegerField()
+    version = models.PositiveBigIntegerField(default=1)
+    status = models.CharField(max_length=12, default='review')
+    submitted_by = models.PositiveBigIntegerField()
+    approved_by = models.PositiveBigIntegerField(null=True)
+    approval_account_version = models.PositiveBigIntegerField(null=True)
+    scheduled_at = models.DateTimeField(null=True, blank=True)
+    published_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=(models.Q(post__isnull=False, website__isnull=True) | models.Q(post__isnull=True, website__isnull=False)), name='pubplan_one_target'),
+            models.CheckConstraint(condition=models.Q(status__in=['review','returned','approved','scheduled','stale','published','cancelled']), name='pubplan_status_valid'),
+            models.UniqueConstraint(fields=['post'], condition=models.Q(status__in=['review','returned','approved','scheduled','stale'], post__isnull=False), name='pubplan_active_post'),
+            models.UniqueConstraint(fields=['website'], condition=models.Q(status__in=['review','returned','approved','scheduled','stale'], website__isnull=False), name='pubplan_active_website'),
+        ]
+        indexes = [models.Index(fields=['status','scheduled_at'], name='pubplan_due_idx')]
+
+
+class PublishingEvent(models.Model):
+    plan = models.ForeignKey(PublishingPlan, on_delete=models.PROTECT, related_name='events')
+    version = models.PositiveBigIntegerField()
+    action = models.CharField(max_length=20)
+    target_version = models.PositiveBigIntegerField()
+    scheduled_at = models.DateTimeField(null=True, blank=True)
+    actor_id = models.PositiveBigIntegerField()
+    note = models.CharField(max_length=500, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['plan','version'], name='pubevent_version_unique')]
+
+
+class TopicCluster(models.Model):
+    name = models.CharField(max_length=120)
+    keyword = models.CharField(max_length=100)
+    market = models.CharField(max_length=100, blank=True, default='')
+    intent = models.CharField(max_length=20, default='informational')
+    keywords = models.JSONField(default=list)
+    notes = models.TextField(blank=True, default='')
+    version = models.PositiveBigIntegerField(default=1)
+    archived = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class ContentTask(models.Model):
+    title = models.CharField(max_length=160)
+    stage = models.CharField(max_length=12, default='idea')
+    priority = models.CharField(max_length=8, default='medium')
+    keyword = models.CharField(max_length=100, blank=True, default='')
+    audience = models.CharField(max_length=160, blank=True, default='')
+    intent = models.CharField(max_length=20, default='informational')
+    brief = models.TextField(blank=True, default='')
+    outline = models.TextField(blank=True, default='')
+    due = models.DateField(null=True, blank=True)
+    assignee_id = models.PositiveBigIntegerField(null=True, blank=True)
+    actor_id = models.PositiveBigIntegerField()
+    version = models.PositiveBigIntegerField(default=1)
+    cluster = models.ForeignKey(TopicCluster, null=True, blank=True, on_delete=models.PROTECT)
+    post = models.ForeignKey(Post, null=True, blank=True, on_delete=models.PROTECT)
+    opportunity = models.OneToOneField(ContentOpportunity, null=True, blank=True, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [models.CheckConstraint(condition=models.Q(stage__in=['idea','research','writing','optimizing','ready','archived']), name='content_task_stage_valid'), models.CheckConstraint(condition=models.Q(priority__in=['low','medium','high']), name='content_task_priority_valid')]
+        indexes = [models.Index(fields=['stage','due'], name='content_task_stage_due')]

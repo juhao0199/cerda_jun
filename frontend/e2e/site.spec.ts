@@ -1,3 +1,4 @@
+import {readFile} from 'node:fs/promises';
 import {test,expect} from '@playwright/test';
 test('hero switches between meaningful capability diagrams',async({page})=>{
  await page.goto('/');
@@ -10,7 +11,12 @@ test('hero switches between meaningful capability diagrams',async({page})=>{
  await hero.getByRole('button',{name:'Pause motion'}).click();
  await expect(hero.getByRole('button',{name:'Play motion'})).toHaveAttribute('aria-pressed','true');
 });
-test('guided estimate and local brief export',async({page})=>{
+test('guided estimate attaches to the one-page contact form',async({page},testInfo)=>{
+ const payloads: unknown[] = [];
+ await page.route(/\/api\/(?:contact|inquiries)$/, async route => {
+  payloads.push(route.request().postDataJSON());
+  await route.fulfill({status:201,json:{reference:'CEDAR-ESTIMATE-TEST'}});
+ });
  await page.goto('/#estimate');
  const region=page.locator('#estimate');
  await expect(region.getByRole('button',{name:'Continue'})).toBeDisabled();
@@ -23,17 +29,91 @@ test('guided estimate and local brief export',async({page})=>{
  await region.getByRole('button',{name:'Ready to build'}).click();
  await region.getByRole('button',{name:'Continue'}).click();
  await expect(region.getByText('$900 – $1,250')).toBeVisible();
- await region.getByRole('link',{name:/Prepare a tailored brief/}).click();
+ const apply=region.getByRole('link',{name:'Attach estimate to inquiry'});
+ await apply.click();
  const contact=page.locator('#contact');
- await contact.getByLabel('Project overview').fill('A multilingual business website for our customers.');
- await contact.getByRole('button',{name:'Continue'}).click();
- await contact.getByLabel('Your name').fill('Test Client');
- await contact.getByLabel('Email').fill('client@example.com');
- await contact.getByRole('button',{name:'Continue'}).click();
- const download=page.waitForEvent('download');
- await contact.getByRole('button',{name:/Export brief/}).click();
- expect((await download).suggestedFilename()).toBe('cedar-cursor-project-brief.txt');
+ const form=contact.getByRole('form',{name:/^(Project inquiry|Prepare a project brief)$/});
+ await expect(form.getByText('Estimate attached',{exact:true})).toBeVisible();
+ await form.getByLabel('Project details').fill('A multilingual business website for our customers.');
+ await form.getByLabel('Your name').fill('Test Client');
+ await form.getByLabel('Email',{exact:true}).fill('client@example.com');
+
+ await form.getByRole('button',{name:'Remove estimate'}).click();
+ await expect(form.getByText('Estimate attached',{exact:true})).toHaveCount(0);
+ await apply.click();
+ await expect(form.getByText('Estimate attached',{exact:true})).toBeVisible();
+ await expect(form.getByLabel('Project details')).toHaveValue('A multilingual business website for our customers.');
+
+ const send=form.getByRole('button',{name:'Send project inquiry'});
+ if(await send.isVisible()){
+  await form.getByRole('checkbox',{name:/You may email me about this project/}).check();
+  await send.click();
+  await expect(contact.getByRole('heading',{name:'Message received'})).toBeVisible();
+  await expect(contact.getByText('CEDAR-ESTIMATE-TEST',{exact:false})).toBeVisible();
+  expect(payloads).toEqual([expect.objectContaining({
+   overview:'A multilingual business website for our customers.',
+   name:'Test Client',
+   email:'client@example.com',
+   consent:true,
+   discovery:{type:'website',goal:'design',features:['cms'],stage:'ready'},
+  })]);
+ }else{
+  await expect(contact.locator('a[href^="mailto:jun@cedarandcursor.com"]').first()).toBeVisible();
+  const downloaded=page.waitForEvent('download');
+  await form.getByRole('button',{name:'Download project brief'}).click();
+  const download=await downloaded;
+  expect(download.suggestedFilename()).toBe('cedar-cursor-project-brief.txt');
+  const briefPath=testInfo.outputPath('project-brief.txt');
+  await download.saveAs(briefPath);
+  const contents=await readFile(briefPath,'utf8');
+  expect(contents).toContain('$900');
+  expect(contents).toContain('$1,250');
+  expect(contents).toContain('A multilingual business website for our customers.');
+  expect(payloads).toHaveLength(0);
+ }
 });
+
+test('contact retries the same inquiry without sending twice while pending',async({page})=>{
+ const attempts: Array<{requestId:string;overview:string;consent:boolean;website:string}> = [];
+ let resolveRetry: () => void = () => {};
+ const retryCanFinish = new Promise<void>(resolve => { resolveRetry=resolve; });
+ await page.route(/\/api\/(?:contact|inquiries)$/, async route => {
+  attempts.push(route.request().postDataJSON());
+  if(attempts.length===1){
+   await route.fulfill({status:503,json:{error:'Please try again in a moment.'}});
+   return;
+  }
+  await retryCanFinish;
+  await route.fulfill({status:201,json:{reference:'CEDAR-RETRY-TEST'}});
+ });
+ await page.goto('/#contact');
+ const contact=page.locator('#contact');
+ const form=contact.getByRole('form',{name:/^(Project inquiry|Prepare a project brief)$/});
+ const send=form.getByRole('button',{name:'Send project inquiry'});
+ test.skip(!(await send.isVisible()),'This deployment has no live inquiry endpoint.');
+ await form.getByLabel('Your name').fill('Test Client');
+ await form.getByLabel('Email',{exact:true}).fill('client@example.com');
+ await form.getByLabel('Project details').fill('We need a website to take bookings.');
+ await form.getByRole('checkbox',{name:/You may email me about this project/}).check();
+ await send.click();
+ await expect(contact.getByText('Please try again in a moment.',{exact:true})).toBeVisible();
+ await expect(form.getByLabel('Project details')).toHaveValue('We need a website to take bookings.');
+ await send.click();
+ try{
+  await expect(contact.getByRole('button',{name:'Sending…'})).toBeDisabled();
+  await expect.poll(()=>attempts.length).toBe(2);
+  await page.keyboard.press('Enter');
+ }finally{
+  resolveRetry();
+ }
+ await expect(contact.getByRole('heading',{name:'Message received'})).toBeVisible();
+ await expect(contact.getByText('CEDAR-RETRY-TEST',{exact:false})).toBeVisible();
+ expect(attempts).toHaveLength(2);
+ expect(attempts[0].requestId).toMatch(/^[\da-f-]{36}$/i);
+ expect(attempts[0]).toMatchObject({overview:'We need a website to take bookings.',consent:true,website:''});
+ expect(attempts[1]).toEqual(attempts[0]);
+});
+
 test('workflow responds to stage selection',async({page})=>{
  await page.goto('/#process');
  await page.getByRole('tab',{name:'Build'}).click();
@@ -200,7 +280,7 @@ test('home editorial sections retain interaction without nested marketing cards'
  await expect(home.locator('#services .service-matrix')).toHaveCSS('display','block');
  await expect(home.locator('#estimate .discovery-shell')).toHaveCSS('border-left-width','0px');
  await expect(home.locator('#process .journey-stage')).toHaveCSS('border-left-width','0px');
- await expect(home.locator('#contact .panel')).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
+ await expect(home.locator('#contact').getByRole('form',{name:/^(Project inquiry|Prepare a project brief)$/}).getByLabel('Project details')).toBeVisible();
  await home.locator('#services .service-module').first().getByRole('button',{name:'Mobile',exact:true}).click();
  await expect(home.locator('#services .service-module').first().getByRole('button',{name:'Mobile',exact:true})).toHaveAttribute('aria-pressed','true');
  await home.getByRole('tab',{name:'Build',exact:true}).click();

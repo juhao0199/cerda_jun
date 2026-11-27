@@ -1,7 +1,17 @@
 from django.urls import path
-from . import views, images, media, editorial, discovery, technical, prompt_monitoring, competitors, intelligence
+from . import views, images, media, editorial, discovery, technical, prompt_monitoring, competitors, intelligence, website_content, publishing, operations
 
 urlpatterns = [
+    path('operations/list/', operations.listing),
+    path('operations/task/', operations.change_task),
+    path('operations/cluster/', operations.change_cluster),
+    path('operations/health/', operations.health_report),
+    path('publishing/list/', publishing.listing),
+    path('publishing/detail/<int:plan_id>/', publishing.detail),
+    path('publishing/submit/', publishing.submit),
+    path('publishing/change/', publishing.change),
+    path('website/detail/', website_content.detail),
+    path('website/change/', website_content.change),
     path('competitors/intelligence/history/', intelligence.history),
     path('competitors/intelligence/detail/', intelligence.detail),
     path('competitors/intelligence/run/', intelligence.run),

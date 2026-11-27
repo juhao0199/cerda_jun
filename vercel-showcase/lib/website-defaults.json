@@ -1,0 +1,87 @@
+{
+  "homeTitle": "Cedar & Cursor — Digital Technology Studio",
+  "homeDescription": "Websites, software and AI tools that make businesses work better.",
+  "homeNoindex": false,
+  "blogTitle": "Insights | Cedar & Cursor",
+  "blogDescription": "Practical notes on websites, software and AI for business owners.",
+  "blogNoindex": false,
+  "focusKeyword": "",
+  "faqSchema": false,
+  "serviceSchema": false,
+  "copy": {
+    "heroIntro": "We build websites, software and AI tools that make businesses work better.",
+    "servicesHeading": "Design & development.",
+    "servicesIntro": "Explore our services and configure a project estimate.",
+    "solutionsIntro": "From the website your customers see to the systems your team uses every day, Cedar & Cursor brings design, engineering and practical AI into a single project approach.",
+    "webHeading": "Make the first interaction count.",
+    "webIntro": "Explore our Sunlit Hotpot website project: a responsive hospitality experience with menu discovery, restaurant information and a table-request journey.",
+    "softwareHeading": "Give your work a place to happen.",
+    "softwareIntro": "Replace disconnected spreadsheets and repetitive handoffs with a system built around the people, records and processes that matter.",
+    "aiHeading": "Answers with context.",
+    "aiIntro": "Design AI assistants around approved knowledge, explicit sources and the limits of the task.",
+    "automationHeading": "Make routine work repeatable.",
+    "automationIntro": "Connect systems and remove unnecessary manual steps while preserving control over important decisions.",
+    "industriesHeading": "Built around real business needs.",
+    "industriesIntro": "Explore the kinds of problems we can scope together. These are illustrative applications, not claims about completed client engagements.",
+    "engineeringHeading": "Good design is only the beginning.",
+    "engineeringIntro": "Every project needs a technical foundation appropriate to its scope. We work with modern web frameworks, structured databases and integration layers, with explicit decisions about access, testing and ownership.",
+    "processHeading": "How we work.",
+    "processIntro": "Explore what happens at each stage, and what you get out of it.",
+    "aboutHeading": "About the studio",
+    "aboutIntro": "We work directly with businesses to turn their ideas into useful digital products, from a first website to a custom application.",
+    "faqHeading": "Frequently asked questions",
+    "faqIntro": "Common questions about working with us.",
+    "guidanceHeading": "Before we build.",
+    "guidanceIntro": "Practical answers for teams exploring their next digital project.",
+    "insightsHeading": "Ideas worth building on.",
+    "insightsIntro": "Practical notes on design, software and AI for business owners."
+  },
+  "faq": [
+    {
+      "question": "How much does a project cost?",
+      "answer": "The guided estimate provides an indicative range. A final quote depends on the agreed scope, timeline and integrations."
+    },
+    {
+      "question": "Will I own the source code?",
+      "answer": "Source code ownership and third-party licenses are defined in the service agreement. Transfer of agreed deliverables takes place after the agreed payments."
+    },
+    {
+      "question": "Can you improve an existing website?",
+      "answer": "Yes. We can review the existing stack and discuss redesign, migration, performance or new features."
+    },
+    {
+      "question": "Do you offer ongoing support?",
+      "answer": "Yes. Maintenance scope, response times and monthly costs are agreed separately."
+    }
+  ],
+  "guidance": [
+    {
+      "question": "Do I need a complete specification?",
+      "answer": "No. A short description of your business, the problem and the intended users is a useful starting point. We can work together to define a first release and agree what is outside scope."
+    },
+    {
+      "question": "Can a project start small and expand later?",
+      "answer": "Yes. We can define a focused first release, with a data model and integration approach suited to later expansion. Future work is scoped separately."
+    },
+    {
+      "question": "Can you connect tools we already use?",
+      "answer": "We can evaluate existing APIs, export formats and access permissions, then propose an integration where technically feasible. Third-party subscriptions and restrictions are reviewed during scoping."
+    },
+    {
+      "question": "How do you approach AI reliability?",
+      "answer": "We define permitted information sources, retrieval rules and an evaluation plan. Where decisions are sensitive, we design for human review instead of promising fully autonomous accuracy."
+    },
+    {
+      "question": "How do you approach privacy and access?",
+      "answer": "We discuss what information the system needs, who can use it and which data must remain private. Authentication, role boundaries and retention are agreed according to the project."
+    },
+    {
+      "question": "Can we see progress before launch?",
+      "answer": "We plan reviewable milestones and demonstrate agreed features as they become available, so feedback can be incorporated before release."
+    },
+    {
+      "question": "What happens after delivery?",
+      "answer": "We agree on handover, deployment responsibilities and any maintenance separately, including documentation and third-party operating costs."
+    }
+  ]
+}

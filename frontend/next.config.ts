@@ -1,17 +1,27 @@
 import path from "node:path";
 import type { NextConfig } from 'next';
+import { publicOnly } from './lib/deployment';
+import publicMedia from './content/media.json';
 const backend = (process.env.BACKEND_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  turbopack: { root: path.resolve('.') },
   poweredByHeader: false,
   async rewrites() {
+    if (publicOnly) {
+      // Resolve only the published images bundled with this release.
+      return Object.entries(publicMedia).map(([id, destination]) => ({
+        source: `/api/v1/public/blog/cover/${id}`,
+        destination,
+      }));
+    }
     return [
       { source: '/api/inquiries', destination: `${backend}/api/v1/inquiries/` },
       ...['csrf','login','logout','me','password'].map(action => ({source:`/api/v1/auth/${action}`, destination:`${backend}/api/v1/auth/${action}/`})),
       ...['overview','leads','stage','notes','clients','assign','create','edit','archive','export'].map(action => ({source:`/api/v1/staff/crm/${action}`, destination:`${backend}/api/v1/staff/crm/${action}/`})),
       {source:'/api/v1/staff/crm/leads/:reference', destination:`${backend}/api/v1/staff/crm/leads/:reference/`},
       ...['catalog','list','create','change','detail/:reference','pdf/:reference/:version'].map(action => ({source:`/api/v1/staff/quotations/${action}`, destination:`${backend}/api/v1/staff/quotations/${action}/`})),
-      ...['list','create','change','detail/:slug','revision/:slug/:version','cover/upload','cover/:imageId','media/list','media/detail/:imageId','media/change','media/derive','terms/list','terms/change','seo/list','discovery/list','discovery/create','technical/policy','technical/policy/change','technical/history','technical/report/:auditId','technical/run','monitoring/list','monitoring/create','monitoring/change','monitoring/history','monitoring/record','competitors/intelligence/history','competitors/intelligence/detail','competitors/intelligence/run','competitors/intelligence/classify','competitors/intelligence/compare','competitors/coverage','competitors/list','competitors/create','competitors/change','competitors/benchmark','competitors/observe','competitors/gaps','competitors/gaps/create','competitors/gaps/change','competitors/gaps/draft'].map(action => ({source:`/api/v1/staff/blog/${action}`, destination:`${backend}/api/v1/staff/blog/${action}/`})),
+      ...['operations/list','operations/task','operations/cluster','operations/health','publishing/list','publishing/detail/:planId','publishing/submit','publishing/change','website/detail','website/change','list','create','change','detail/:slug','revision/:slug/:version','cover/upload','cover/:imageId','media/list','media/detail/:imageId','media/change','media/derive','terms/list','terms/change','seo/list','discovery/list','discovery/create','technical/policy','technical/policy/change','technical/history','technical/report/:auditId','technical/run','monitoring/list','monitoring/create','monitoring/change','monitoring/history','monitoring/record','competitors/intelligence/history','competitors/intelligence/detail','competitors/intelligence/run','competitors/intelligence/classify','competitors/intelligence/compare','competitors/coverage','competitors/list','competitors/create','competitors/change','competitors/benchmark','competitors/observe','competitors/gaps','competitors/gaps/create','competitors/gaps/change','competitors/gaps/draft'].map(action => ({source:`/api/v1/staff/blog/${action}`, destination:`${backend}/api/v1/staff/blog/${action}/`})),
       {source:'/api/v1/public/blog/cover/:imageId',destination:`${backend}/api/v1/public/blog/cover/:imageId/`},
       ...['team','team/action','security-center'].map(action => ({source:`/api/v1/staff/${action}`, destination:`${backend}/api/v1/staff/${action}/`})),
       ...['inquiries','security-events'].map(action => ({source:`/api/v1/staff/${action}`, destination:`${backend}/api/v1/staff/${action}/`})),

@@ -1,0 +1,4 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {lane,overdue,localDay} from '../lib/content-operations.ts';
+test('planning lanes cannot manufacture publication status',()=>{assert.equal(lane({stage:'ready',release:'draft'}),'ready');assert.equal(lane({stage:'ready',release:'scheduled'}),'scheduled');assert.equal(lane({stage:'writing',release:'published'}),'published');assert.equal(lane({stage:'archived',release:'published'}),'archived');});
+test('overdue excludes published and archived, not unreviewed edits',()=>{assert.equal(overdue({stage:'writing',release:'draft',due:'2026-11-01'},'2026-11-25'),true);assert.equal(overdue({stage:'writing',release:'published',due:'2026-11-01'},'2026-11-25'),false);assert.equal(overdue({stage:'idea',release:'draft',due:null},'2026-11-25'),false);});
+test('local calendar preserves date-only deadlines',()=>assert.equal(localDay(new Date(2026,10,25,23,30)),'2026-11-25'));

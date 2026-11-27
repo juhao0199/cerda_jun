@@ -11,8 +11,9 @@ from django.views.decorators.http import require_GET, require_POST
 from apps.accounts.views import require_role, fail
 from apps.accounts.security import audit
 from apps.inquiries.crm import locked_role, pagination
-from .content import normalize, slug_value, minutes
-from .models import Post, Revision, CoverImage, SlugAlias
+from .content import normalize, slug_value, minutes, STARTER_PLACEHOLDER
+from .models import Post, Revision, CoverImage, SlugAlias, PublishingPlan
+from .publishing_rules import ACTIVE
 from .editorial import editorial_lock, validate_terms
 from .rich_content import MAX_JSON, normalize_document
 
@@ -147,6 +148,22 @@ def get_revision(request, slug, version):
     return JsonResponse({'version': r.version, 'status': r.status, 'action': r.action, 'snapshot': r.snapshot}) if r else fail('Revision not found.', 404)
 
 
+def apply_publication(post):
+    from .competitor_rules import visible_text
+    if STARTER_PLACEHOLDER.casefold() in visible_text(post.draft):
+        raise ValueError('Replace the content planning starter text before publishing.')
+    if post.status == 'archived':
+        raise ValueError('Restore the article before publishing.')
+    if not cover_exists(post.draft):
+        raise ValueError('Article image not found.')
+    post.status = 'published'
+    post.published = post.draft
+    now = timezone.now()
+    post.first_published_at = post.first_published_at or post.published_at or now
+    post.published_at = post.first_published_at
+    post.published_modified_at = now
+
+
 @blog_post
 @require_role('owner', 'staff')
 def create(request, data):
@@ -218,14 +235,12 @@ def change(request, data):
                 return fail(str(e), 400)
             post.draft = fields
         elif action == 'publish':
-            if not cover_exists(post.draft):
-                return fail('Article image not found.', 400)
-            post.status = 'published'
-            post.published = post.draft
-            now = timezone.now()
-            post.first_published_at = post.first_published_at or post.published_at or now
-            post.published_at = post.first_published_at
-            post.published_modified_at = now
+            if PublishingPlan.objects.filter(post=post, status__in=ACTIVE).exists():
+                return fail('An active publishing plan exists. Open Editorial calendar to publish or cancel it.', 409)
+            try:
+                apply_publication(post)
+            except ValueError as e:
+                return fail(str(e), 400)
         elif action == 'rename':
             if new_slug == post.slug or Post.objects.filter(slug=new_slug).exists() or SlugAlias.objects.filter(slug=new_slug).exists():
                 return fail('Slug already exists or is reserved.', 409)

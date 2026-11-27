@@ -1,22 +1,105 @@
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import {notFound,permanentRedirect} from 'next/navigation';
-import {headers} from 'next/headers';
-import {cache} from 'react';
-import {publicArticle,siteUrl} from '@/lib/blog-server';
-import {coverPath,validSlug,type PublicArticle} from '@/lib/blog-content';
-import {RichRender} from '@/components/blog/rich-render';
-const getPost=cache(async(slug:string):Promise<PublicArticle|null>=>{const result=await publicArticle(slug);if(result&&'redirectSlug' in result){if(!validSlug(result.redirectSlug))throw new Error('Invalid canonical slug.');permanentRedirect(`/blog/${result.redirectSlug}`);}return result;});
-type Props={params:Promise<{slug:string}>};
-export async function generateMetadata({params}:Props):Promise<Metadata>{
-  const post=await getPost((await params).slug);
-  if(!post)return {title:'Article not found',robots:{index:false,follow:false}};
-  const title=post.seoTitle||`${post.title} | Cedar & Cursor`,description=post.seoDescription||post.summary,url=`${siteUrl()}/blog/${post.slug}`,cover=coverPath(post.cover);
-  return {title,description,robots:{index:!post.noindex,follow:true},alternates:{canonical:url},openGraph:{title,description,url,type:'article',publishedTime:post.publishedAt,modifiedTime:post.modifiedAt??post.publishedAt,tags:post.tags,...(cover?{images:[{url:`${siteUrl()}${cover}`,alt:post.coverAlt??''}]}:{})}};
+import { notFound, permanentRedirect } from 'next/navigation';
+import { headers } from 'next/headers';
+import { cache } from 'react';
+import { publicArticle, publicRelatedPosts } from '@/lib/blog-server';
+import { coverPath, validSlug } from '@/lib/blog-content';
+import { breadcrumb, organizationId, siteUrl } from '@/lib/site';
+import { pageMetadata } from '@/lib/website-server';
+import { safeJsonLd } from '@/lib/website-schema';
+import { RichRender } from '@/components/blog/rich-render';
+import { ArticleGrid, RelatedTopics } from '@/components/blog/article-card';
+import { topicsFor } from '@/lib/blog-topics';
+import styles from './article-detail.module.css';
+
+type Props = { params: Promise<{ slug: string }> };
+
+const getPost = cache(async (slug: string) => {
+  const result = await publicArticle(slug);
+  if (result && 'redirectSlug' in result) {
+    if (!validSlug(result.redirectSlug)) throw new Error('Invalid canonical slug.');
+    permanentRedirect(`/blog/${result.redirectSlug}`);
+  }
+  return result;
+});
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await getPost((await params).slug);
+  if (!post) return { title: 'Article not found', robots: { index: false, follow: false } };
+
+  const path = `/blog/${post.slug}`;
+  const title = post.seoTitle || `${post.title} | Cedar & Cursor`;
+  const description = post.seoDescription || post.summary;
+  const cover = coverPath(post.cover);
+  const image = `${siteUrl()}${cover || '/share.png'}`;
+  const base = pageMetadata(title, description, path, post.noindex);
+
+  return {
+    ...base,
+    openGraph: {
+      type: 'article', title, description, url: `${siteUrl()}${path}`, publishedTime: post.publishedAt,
+      modifiedTime: post.modifiedAt ?? post.publishedAt, tags: post.tags,
+      images: [{ url: image, alt: cover ? post.coverAlt ?? '' : 'Cedar & Cursor Insights' }],
+    },
+    twitter: { card: 'summary_large_image', title, description, images: [image] },
+  };
 }
-export default async function Article({params}:Props){
-  const post=await getPost((await params).slug);if(!post)notFound();
-  const cover=coverPath(post.cover),nonce=(await headers()).get('x-nonce')??undefined;
-  const structured={'@context':'https://schema.org','@type':'BlogPosting',headline:post.title,description:post.summary,datePublished:post.publishedAt,dateModified:post.modifiedAt??post.publishedAt,mainEntityOfPage:`${siteUrl()}/blog/${post.slug}`,author:{'@type':post.author&&post.author!=='Cedar & Cursor'?'Person':'Organization',name:post.author||'Cedar & Cursor'},publisher:{'@type':'Organization',name:'Cedar & Cursor'},...(cover?{image:`${siteUrl()}${cover}`}:{})};
-  return <main id="main" className="article-page"><script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{__html:JSON.stringify(structured).replace(/</g,'\\u003c')}}/><article className="wrap article-wrap"><Link className="textbtn" href="/blog">← All insights</Link><div className="article-intro"><span>{post.category} · {post.minutes} min read · {post.author||'Cedar & Cursor'}</span><h1>{post.title}</h1><p>{post.summary}</p></div>{cover&&<img className="blog-cover" src={cover} alt={post.coverAlt??''}/>}<div className="article-body">{post.document?<RichRender document={post.document}/>:post.sections.map((s,i)=><section key={i}><h2>{s.heading}</h2>{s.body.split(/\n\s*\n/).map((p,j)=><p key={j} className="blog-paragraph">{p}</p>)}</section>)}{post.tags.length>0&&<p className="blog-tags">{post.tags.join(' · ')}</p>}<Link className="btn darkbtn" href="/#estimate">Explore your project ↗</Link></div></article></main>
+
+export default async function Article({ params }: Props) {
+  const post = await getPost((await params).slug);
+  if (!post) notFound();
+
+  const cover = coverPath(post.cover);
+  const path = `/blog/${post.slug}`;
+  const url = `${siteUrl()}${path}`;
+  const [requestHeaders, related] = await Promise.all([headers(), publicRelatedPosts(post)]);
+  const nonce = requestHeaders.get('x-nonce') ?? undefined;
+  const topics = topicsFor(post);
+  const graph = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BlogPosting', '@id': `${url}#article`, headline: post.title, description: post.summary,
+        datePublished: post.publishedAt, dateModified: post.modifiedAt ?? post.publishedAt,
+        mainEntityOfPage: url, inLanguage: 'en',
+        author: post.author && post.author !== 'Cedar & Cursor'
+          ? { '@type': 'Person', name: post.author }
+          : { '@type': 'Organization', '@id': organizationId(), name: 'Cedar & Cursor', url: siteUrl() },
+        publisher: { '@id': organizationId() }, image: `${siteUrl()}${cover || '/share.png'}`,
+      },
+      breadcrumb([{ name: 'Home', path: '/' }, { name: 'Insights', path: '/blog' }, { name: post.title, path }]),
+    ],
+  };
+
+  return <main id="main" className="article-page">
+    <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: safeJsonLd(graph) }} />
+    <article className="wrap article-wrap">
+      <nav className="page-crumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href="/blog">Insights</Link></nav>
+      <div className="article-intro">
+        <span>{post.category} · {post.minutes} min read · {post.author || 'Cedar & Cursor'}</span>
+        <h1>{post.title}</h1><p>{post.summary}</p>
+      </div>
+      {cover && <img className="blog-cover" src={cover} alt={post.coverAlt ?? ''} />}
+      <div className="article-body">
+        {post.takeaway && <aside className="article-takeaway"><strong>Quick answer</strong><p>{post.takeaway}</p></aside>}
+        {post.document ? <RichRender document={post.document} /> : post.sections.map((section, index) => <section key={index}>
+          <h2>{section.heading}</h2>
+          {section.body.split(/\n\s*\n/).map((paragraph, paragraphIndex) => <p key={paragraphIndex} className="blog-paragraph">{paragraph}</p>)}
+        </section>)}
+        {post.guidance?.map(section => <section key={section.heading}>
+          <h2>{section.heading}</h2>
+          {section.body.split(/\n\s*\n/).map((paragraph, index) => <p key={index} className="blog-paragraph">{paragraph}</p>)}
+        </section>)}
+        <aside className={styles.topics} aria-label="Article topics"><RelatedTopics topics={topics} /></aside>
+      </div>
+      {related.length > 0 && <section id="related-articles" className={styles.related} aria-labelledby="related-articles-heading">
+        <h2 id="related-articles-heading">Related articles</h2>
+        <ArticleGrid posts={related} headingLevel={3} />
+      </section>}
+      <div className={styles.actions}>
+        <Link className="btn darkbtn" href="/#estimate">Explore your project</Link>
+      </div>
+    </article>
+  </main>;
 }

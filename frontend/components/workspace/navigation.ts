@@ -1,6 +1,6 @@
 import type { Role } from '@/lib/session-api';
 
-export const sections = ['overview', 'leads', 'clients', 'quotations', 'blog', 'media', 'editorial', 'seo', 'aeo', 'geo', 'monitoring', 'competitors', 'audit', 'crawlers', 'team', 'security', 'settings'] as const;
+export const sections = ['overview', 'leads', 'clients', 'quotations', 'blog', 'media', 'editorial', 'content', 'calendar', 'website', 'seo', 'aeo', 'geo', 'monitoring', 'competitors', 'audit', 'crawlers', 'team', 'security', 'settings'] as const;
 export type Section = typeof sections[number];
 export type NavItem = { id: Section; label: string; href: string; roles: readonly Role[]; group: string };
 export const navigation: readonly NavItem[] = [
@@ -11,6 +11,9 @@ export const navigation: readonly NavItem[] = [
   { id: 'blog', label: 'Blog CMS', href: '/workspace/blog', roles: ['owner', 'staff'], group: 'Marketing' },
   { id: 'media', label: 'Media library', href: '/workspace/media', roles: ['owner', 'staff'], group: 'Marketing' },
   { id: 'editorial', label: 'Editorial directory', href: '/workspace/editorial', roles: ['owner', 'staff'], group: 'Marketing' },
+  { id: 'content', label: 'Content operations', href: '/workspace/content', roles: ['owner', 'staff'], group: 'Marketing' },
+  { id: 'calendar', label: 'Editorial calendar', href: '/workspace/calendar', roles: ['owner', 'staff'], group: 'Marketing' },
+  { id: 'website', label: 'Website optimization', href: '/workspace/website', roles: ['owner', 'staff'], group: 'Marketing' },
   { id: 'seo', label: 'SEO center', href: '/workspace/seo', roles: ['owner', 'staff'], group: 'Marketing' },
   { id: 'aeo', label: 'AEO center', href: '/workspace/aeo', roles: ['owner', 'staff'], group: 'Marketing' },
   { id: 'geo', label: 'GEO center', href: '/workspace/geo', roles: ['owner', 'staff'], group: 'Marketing' },

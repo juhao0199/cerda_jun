@@ -18,6 +18,7 @@ test('marketing navigation opens solutions and reaches the new chapters',async({
   await expect(page).toHaveURL(/#studio-web$/);
   await expect(web).toBeHidden();
   await expect(page.locator('header[data-tone]')).toHaveAttribute('data-tone','light');
+  await expect(page.locator('header[data-tone]')).toHaveCSS('position','sticky');
   await expect(nav).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBe(true);
 });
@@ -26,6 +27,7 @@ test('blog uses light navigation and project actions remain available',async({pa
   await page.goto('/blog');
   const nav=page.getByRole('navigation',{name:'Main navigation'});
   await expect(page.locator('header[data-tone]')).toHaveAttribute('data-tone','light');
+  await expect(page.locator('header[data-tone]')).toHaveCSS('position','sticky');
   const menu=nav.getByRole('button',{name:'Open menu'});
   if(await menu.isVisible())await menu.click();
   await expect(nav.getByRole('link',{name:'Blog',exact:true})).toHaveAttribute('aria-current','page');

@@ -1,0 +1,23 @@
+.topics {
+  padding: 18px 22px;
+  border: 1px solid #e2e3de;
+  border-radius: 10px;
+}
+
+.related {
+  margin-block-start: clamp(32px, 4vw, 52px);
+  padding-block-start: 24px;
+  border-block-start: 1px solid #dddeda;
+  scroll-margin-top: 90px;
+}
+
+.related > h2 {
+  margin-block-end: 16px;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.2;
+}
+
+.actions {
+  max-width: 730px;
+  margin: 32px auto 0;
+}

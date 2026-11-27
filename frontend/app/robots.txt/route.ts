@@ -1,5 +1,12 @@
+import { publicOnly } from '@/lib/deployment';
+import { isPreview, siteUrl } from '@/lib/site';
+
 export const dynamic='force-dynamic';
 export async function GET(){
+  if (publicOnly) {
+    const rules = isPreview() ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /workspace\nDisallow: /login\nSitemap: ${siteUrl()}/sitemap.xml\n`;
+    return new Response(rules, { headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' } });
+  }
   const backend=(process.env.BACKEND_URL||'http://127.0.0.1:8000').replace(/\/$/,'');
   try{
     const upstream=new URL(process.env.BLOG_BACKEND_ORIGIN||backend);

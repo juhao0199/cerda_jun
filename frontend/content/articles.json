@@ -1,0 +1,522 @@
+[
+  {
+    "slug": "website-launch-checklist",
+    "title": "A website launch checklist for small business teams",
+    "category": "Web",
+    "summary": "Run a complete launch rehearsal for your public pages, mobile navigation, contact form, search settings and first week of support.",
+    "minutes": 3,
+    "cover": "upload:319f3a8c-bdd1-4539-bb0d-3ffa346b899e",
+    "publishedAt": "2026-11-27T12:02:45.780299+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.780299+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "A website open on a laptop and phone beside a printed launch checklist.",
+    "sections": [
+      {
+        "body": "A website is ready to publish when real people can complete its important journeys and your team can confirm what happened. Start with three to five actions, such as reading a service page, opening the mobile menu, finding the contact address and completing an inquiry.\n\nWrite each journey as a test with an observable result. For a service business, “send an inquiry” is too broad. A better check is: a visitor finds the form from the service page, submits valid details, sees a reference and the team receives the same reference in its inbox. Give each check an owner and record failures before setting a launch date.",
+        "heading": "Test the journeys that matter"
+      },
+      {
+        "body": "Open the actual release on a phone rather than relying only on a narrow desktop window. Check whether the menu opens, closes and follows a link without trapping the visitor. Read a long heading and try a form with the on-screen keyboard. Review text contrast, touch targets and the order reached by pressing Tab on a desktop.\n\nCheck all public pages from the top navigation, footer and sitemap. Look for placeholder copy, wrong photos, draft prices, outdated addresses and downloads that open an error page. Ask someone who did not build the site to find the most important information without being told where it is.",
+        "heading": "Review the site on a phone and a desktop"
+      },
+      {
+        "body": "Test the actual release environment using a non-sensitive message and an external reply address you can check. Verify the inbox and spam folder. Then use Reply to confirm it addresses the test sender. Try an invalid email and a missing required field to see whether errors are understandable and the text stays on screen.\n\nA success page only proves the application displayed a success state. It does not prove someone received the message. If the form cannot send, make the confirmed company email visible and document who will check the failure.",
+        "heading": "Send a real test message"
+      },
+      {
+        "body": "Open the primary HTTPS domain and its common variants. Confirm that the intended address loads, secondary addresses resolve as planned and old links reach the relevant new pages. Verify page titles, descriptions, canonical URLs, the sitemap and search access on the production domain. Keep previews out of search and make sure preview restrictions did not carry over to the public release.\n\nInspect representative pages in your search tools after publication. A submitted sitemap helps discovery, but it does not guarantee indexing or ranking. Keep the domain, deployment and mail accounts under clear company ownership.",
+        "heading": "Check the domain and search configuration"
+      },
+      {
+        "body": "Record who checks incoming inquiries, who can redeploy and which version to restore if a critical journey breaks. Recheck the site after its DNS changes settle, after the first real submission and after any urgent patch. Keep a small log of issues with a URL, device and expected behavior so the next person can reproduce the problem.",
+        "heading": "Plan the first week after launch"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "Small business website launch checklist | Cedar & Cursor",
+    "seoDescription": "A practical checklist for testing pages, mobile navigation, contact forms, canonical URLs, redirects and support before a small business website goes live."
+  },
+  {
+    "slug": "crm-first-workflow",
+    "title": "Set up your first CRM workflow from inquiry to quotation",
+    "category": "Software",
+    "summary": "Build a small sales workflow your team can keep current. Define who owns each inquiry, when a quotation is ready, and how to follow up without losing the history.",
+    "minutes": 3,
+    "cover": "upload:11182c6c-6c03-4a89-b67e-bcc0faa5a674",
+    "publishedAt": "2026-11-27T12:02:45.777162+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.777162+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "A laptop showing an example sales pipeline beside cards representing lead handoffs.",
+    "sections": [
+      {
+        "body": "A useful first CRM workflow gives each real inquiry an owner, a next action and enough context for someone else to pick it up. Begin with inquiries and quotations, then expand once your team reliably records outcomes. A simple shared queue with clear responsibilities will help more than an elaborate set of stages no one maintains.\n\nUse one place to record inquiries received by email, website form, phone or referral. Capture the contact, source, summary, last interaction and next action. Keep contact details separate from the sales opportunity so a returning customer can have two projects without creating two copies of their address.",
+        "heading": "Start with the next action"
+      },
+      {
+        "body": "Use stages that correspond to changes you can verify. New means nobody has reviewed the request. In review means someone owns it and needs to assess fit or clarify details. Quotation sent means a particular quote version reached the customer. Won, lost and paused describe different outcomes, each with a date and a short reason.\n\nMake stage changes useful to the next person. A lead entering review gets an owner and a date for the next action. A lead moving to quotation sent gets the quote reference, the date sent and the expected follow-up date. For a paused opportunity, add a date to reconsider it or a specific event that would restart the conversation.",
+        "heading": "Give each stage a testable meaning"
+      },
+      {
+        "body": "Consider an inquiry from a retailer who wants a redesign and mentions a deadline. The person receiving it records the request and assigns it to the person who can assess the work. The new owner records the unanswered decisions, such as who supplies imagery and whether the existing product catalogue must move. A colleague taking over later can see what was agreed rather than relying on an email someone forwarded.\n\nA queue for unassigned inquiries catches gaps. A separate follow-up view shows open opportunities with no next action or an overdue date. Tell the team who checks these views each working day and who takes over during absences. Avoid using empty fields or silence as a signal that someone else is handling a request.",
+        "heading": "Make the handoff visible"
+      },
+      {
+        "body": "Distinguish the working draft from the version the customer saw. If the scope, price or delivery terms change, create a revision rather than altering the sent version. Preserve the reference, customer, date and agreed follow-up. If the customer accepts a revised offer, record which version they accepted before handing the project over to delivery.\n\nReview the workflow with a few real past inquiries. Can you identify who owned each one, what changed between its two quotation versions and who should act today? Can a team member spot an unassigned request without opening every record? Use the answers to decide whether you need a new field, a clearer rule or simply one less stage.",
+        "heading": "Keep quotation history clear"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "CRM workflow from inquiry to quotation | Cedar & Cursor",
+    "seoDescription": "Set up a CRM workflow that gives every inquiry an owner, supports quotation revisions, and makes the next follow-up easy for your team to find."
+  },
+  {
+    "slug": "ai-knowledge-assistant-pilot",
+    "title": "How to pilot an AI knowledge assistant with evidence",
+    "category": "AI",
+    "summary": "Test an internal AI assistant with approved sources, representative questions and checks for access, citations and uncertainty before staff rely on its answers.",
+    "minutes": 3,
+    "cover": "upload:9120b28d-d400-449b-ad98-861770120d22",
+    "publishedAt": "2026-11-27T12:02:45.774065+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.774065+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "A person marks a printed source beside a laptop showing an example question and source references.",
+    "sections": [
+      {
+        "body": "Pilot a knowledge assistant on a narrow set of questions with answers you can check against approved documents. Measure whether staff can find reliable answers more easily, check that the assistant respects their access, and decide what should happen when the source is missing. A pilot should help you decide where the assistant belongs in your workflow.\n\nStart with a task such as finding the current return procedure or answering questions about an internal onboarding guide. Ask the team to collect recent real questions and remove any sensitive details before using them as evaluation examples. Reserve decisions such as making a refund, approving a purchase or communicating a policy exception for the responsible person.",
+        "heading": "Pick a question you can check"
+      },
+      {
+        "body": "Make a short source inventory. Record what the document covers, who owns it, where it is published and what version staff should trust. Exclude obsolete or duplicated policies unless the pilot specifically needs to explain their history. Agree who replaces a document in the index when the underlying policy changes.\n\nReview permissions with accounts that represent real roles. If a staff member cannot access a policy attachment in its original location, the assistant should not give them the same information from a retrieved copy. Test the actual application response and citations for each role. Check whether an administrator can remove a source and how quickly that removal reaches users.",
+        "heading": "Define the approved sources and roles"
+      },
+      {
+        "body": "For each evaluation question, record the answer supported by the source, the exact passage and the expected action if evidence is missing. Include straightforward lookups, questions that need two sources, ambiguous wording, outdated guidance and requests a role should not see. Leave a small set out of development so you can check a later build with examples it was not tuned against.\n\nA reviewer can mark whether the response is correct, whether the citation supports the specific claim and whether the user must still do manual research. When sources conflict, the desired result might be a short explanation of the conflict and a direction to the policy owner. Keep the review rubric concrete enough that two reviewers can discuss why they scored an answer differently.",
+        "heading": "Make an evaluation set the team can score"
+      },
+      {
+        "body": "Have a small group try the same representative tasks with and without the assistant. Track time to verified answer, correction effort and questions that still need escalation. A fluent answer with an unsupported citation should be treated as a failure for a policy task. Ask staff where the assistant made verification easier and where it created more work.\n\nBefore expanding, review unresolved access failures, source update responsibilities and follow-up workload. Publish guidance for when staff can rely on an answer and when a person should review it. Keep the evaluation set and run it again after material changes to the documents, search settings or model. Use the pilot observations to choose a specific next task rather than enabling the assistant across every department.",
+        "heading": "Compare the pilot with today's workflow"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "AI knowledge assistant pilot checklist | Cedar & Cursor",
+    "seoDescription": "Plan an internal AI assistant pilot with approved sources, role-aware access, a small evaluation set, and clear rules for answers the evidence cannot support."
+  },
+  {
+    "slug": "dashboard-metrics-for-small-business",
+    "title": "Choose small-business dashboard metrics that support decisions",
+    "category": "Software",
+    "summary": "Connect each dashboard metric to a decision. Define its source, who it counts, the period it covers and what the team should do when it changes.",
+    "minutes": 3,
+    "cover": "upload:265fab34-2b87-4970-8396-b47e091d7b6a",
+    "publishedAt": "2026-11-27T12:02:45.770849+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.770849+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "An example business dashboard with trend charts beside a card comparing periods.",
+    "sections": [
+      {
+        "body": "Choose a dashboard measure by asking what someone will do if it moves. Give each measure a clear definition, a trusted data source, a comparison period and an owner. Start with the decisions that recur each week, such as who should follow up with a customer or where a delivery queue needs attention.\n\nFor example, a service team deciding how to schedule follow-ups may need its count of overdue open inquiries and median time to first response. A daily all-time inquiry total tells the team little about either decision. Keep longer-term views for planning and give the people doing the work a short path to the records needing attention.",
+        "heading": "Begin with a decision your team makes"
+      },
+      {
+        "body": "Write out what enters the measure and what is excluded. For a first-response rate, the numerator could be eligible inquiries that received a response within one business day. The denominator would be eligible inquiries old enough to have had a full business day to receive the response. This prevents very recent inquiries being counted as missed. Decide whether an automatic acknowledgment counts and which time zone the business-day calculation uses.\n\nFor quotation acceptance, define whether a revised quotation is another offer or the same sales opportunity. If you divide accepted quotes this week by quotes issued this week, those groups may contain different customers. Tracking a group of eligible offers through a fixed observation window can answer how often offers become work.",
+        "heading": "Define the numerator, denominator and date"
+      },
+      {
+        "body": "Compare complete periods of the same length, or label a partial period clearly. If the business varies by weekday or season, compare equivalent days and note known events such as closures, campaigns and a change in opening hours. Show when the underlying records were last updated so a delay in data collection is visible.\n\nWhere a rate seems to change sharply, show the total records behind it. One extra success moves a rate for a small group much more than it moves a rate for a large one. A low response rate might mean staff are missing follow-ups, or it could indicate incomplete records from a new channel. Open a sample of the underlying rows before changing the process.",
+        "heading": "Compare periods that tell the same story"
+      },
+      {
+        "body": "Write a short note beside each measure for who reviews it, what prompts a closer look and which records to open first. For a follow-up backlog, the action might be to assign overdue inquiries to a named person. For a delivery delay, it might be to check whether several jobs are waiting for the same approval.\n\nReview the dashboard after a few reporting cycles. Ask users which figures changed a decision, which ones were hard to interpret and where they still went back to a spreadsheet. Remove figures no one uses, fix unclear definitions and retain notes explaining important changes. The dashboard is useful when it helps a team spot an issue and agree what to do next.",
+        "heading": "Close the loop with an action"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "Small-business dashboard metrics guide | Cedar & Cursor",
+    "seoDescription": "Build a small-business dashboard with meaningful metric definitions, consistent comparison periods and an action owner for changes worth investigating."
+  },
+  {
+    "slug": "software-ownership-and-handover",
+    "title": "What to include in a software ownership and handover plan",
+    "category": "Software",
+    "summary": "Document where the software runs, who can operate it and what must be renewed. Verify the handover by having someone other than the builder perform a routine task.",
+    "minutes": 3,
+    "cover": "upload:48b8779c-c5a9-435f-8f71-b69133d81944",
+    "publishedAt": "2026-11-27T12:02:45.767678+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.767678+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "A laptop showing a file tree beside a key and a handover checklist.",
+    "sections": [
+      {
+        "body": "A software handover is complete when the receiving team can find the systems, deploy a change, handle a routine failure and know who pays for renewals. Agree what will be transferred early enough to set up the accounts and permissions correctly. Keep code rights, operational access and third-party subscriptions distinct in the agreement because they may come with different terms.\n\nUse a practical deliverable to establish the scope. A marketing site handover might include a supervised page edit, a redeploy and a walk-through of where form submissions arrive. A system with business records might also need an export test and a recovery exercise in a separate environment.",
+        "heading": "Test whether someone can take over"
+      },
+      {
+        "body": "Name the owner of the code repository, deployment project, domain, DNS, database and any storage used for uploads or backups. Include services such as email, analytics, payment or scheduled jobs when the software depends on them. For each one, record where to find it, who administers it, which account pays and when a renewal or certificate check is due.\n\nConfirm which items can move onto a customer account and which need a separate licence. For example, source files may be transferred while a commercial font or external data subscription remains separately licensed. Verify what the agreement grants so the handover document reflects the rights and accounts the receiving team actually has.",
+        "heading": "List the assets and responsible accounts"
+      },
+      {
+        "body": "Invite users through each provider's account controls and set roles by responsibility. Document where deployment settings and secrets are managed, without putting their values in the handover. Make sure the receiving team has a way to recover account access and can remove old collaborators when the project ends.\n\nAsk a person who did not build the system to deploy a minor change to a non-production environment using the instructions. Then ask them to find a recent backup and restore it to a separate space. Log any missing permission or unclear step while the people who know the system are available. If the recovery procedure has not been tested, mark that clearly instead of assuming a backup will work.",
+        "heading": "Prove that access and recovery work"
+      },
+      {
+        "body": "Finish with a short operating guide for regular jobs, incidents and renewals. Include how to check whether the application is healthy, revert a bad release and contact the right provider. Document which content changes staff can make themselves and which access changes need another person's approval.\n\nThe handover should include a review date and a person responsible for updating the records. Revisit them when a domain moves, a team member leaves, a new vendor joins or the software starts handling additional data. A brief live record is easier to keep useful than a long document that no one owns.\n\nBefore closing the handover, check one alert end to end. Send a test alert to the team that will own the system, confirm somebody can open the relevant logs, and check that the alert points to current instructions rather than the builder’s personal inbox.",
+        "heading": "Keep ownership current"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "Software ownership and handover checklist | Cedar & Cursor",
+    "seoDescription": "Create a software handover checklist for code, hosting, accounts, data, renewals and recovery. See how to verify that a new operator can work independently."
+  },
+  {
+    "slug": "process-automation-approval-checklist",
+    "title": "Design an automation approval that can be retried safely",
+    "category": "Automation",
+    "summary": "Define the approval record, the person allowed to decide and the evidence that an action ran. Then test duplicate requests, edited details and uncertain results.",
+    "minutes": 3,
+    "cover": "upload:51d31951-b359-42e5-b29f-9b3783e1b5e7",
+    "publishedAt": "2026-11-27T12:02:45.764264+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.764264+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "A hand inspects one of three sets of workflow cards linked by arrows.",
+    "sections": [
+      {
+        "body": "An approval workflow should track what was requested, who accepted which version and what happened afterward. Store the decision before the downstream action and tie the action to a stable reference. This makes it possible to work out whether a failed call can be retried without repeating the business action.\n\nChoose a concrete workflow for the design. For example, a customer service team may submit a credit adjustment. The reviewer needs the customer reference, amount, reason and related order. The person preparing the request needs to know who can approve it. The finance operator needs an accurate record of whether the adjustment was applied.",
+        "heading": "Separate the request, decision and action"
+      },
+      {
+        "body": "Show the approver the amount, recipient, deadline and relevant attachments before asking for a decision. Keep approvals attached to that version of the request. If a material field changes after approval, return it to review under the updated version before running the action.\n\nWrite down who may approve, who may substitute when a person is absent, and what makes a request eligible for automatic processing. Keep the scope narrow enough to explain using examples. An invoice that exceeds an agreed threshold might go to an additional reviewer. A request with incomplete details should stay with the person who can correct it.",
+        "heading": "Define exactly what a reviewer is approving"
+      },
+      {
+        "body": "Create one stable reference for each approved action and reuse it on retries. Store the status and any downstream confirmation with that reference. If the downstream service supports idempotency, check what it deduplicates and how long a key is recognized. If it does not, look up the outcome using a reference or reconcile with the receiving system before trying again.\n\nTreat an interrupted connection as an unknown result. The external system could have completed the work without returning a response. In that case, give the operator a way to verify the outcome. Record enough details to match the approved request with a bank, order or invoice record without exposing information to staff who do not need it.\n\nKeep the original reference when you queue a retry. Giving the job a new reference can make an otherwise helpful deduplication check treat it as a separate action. If someone intentionally needs to submit another adjustment, record a new request and approval for that adjustment.",
+        "heading": "Check whether a retry would repeat the action"
+      },
+      {
+        "body": "Run test cases for a duplicate submission, two approvers acting almost together, a timeout after a downstream success and an edited request that already has an approval. Confirm that the same reference does not apply the action twice and that stale decisions cannot authorize changed details. Include a rejected request and check that it never reaches the execution step.\n\nGive operators a queue for requests needing review, failed executions and uncertain results. Put the next safe step in each case, such as correcting a field, checking downstream history or requesting another approval. Document who receives an alert and who can intervene. The workflow is ready when a colleague can explain each state and demonstrate what happens after a failure.",
+        "heading": "Test before allowing automatic retries"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "Automation approval and retry checklist | Cedar & Cursor",
+    "seoDescription": "Build a clear approval workflow with a defined decision, stable request references, visible errors and retry checks that prevent repeated downstream actions."
+  },
+  {
+    "slug": "what-to-include-in-website-project-brief",
+    "title": "What to include in a website project brief",
+    "category": "Web",
+    "summary": "A short project brief that covers your goal, launch scope, responsibilities, content, account ownership and how the team will accept the work.",
+    "minutes": 3,
+    "cover": "upload:59d2273c-3cdc-4531-ab1b-ddbf460fa5a1",
+    "publishedAt": "2026-11-27T12:02:45.760681+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.760681+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "Hands arranging page sketches, color swatches and scope cards for a website brief.",
+    "sections": [
+      {
+        "body": "A useful website brief explains who the site serves, what those people should do and how you will know the first release is complete. A short, specific brief is enough to start. Add details about content, systems and ownership where they change the scope. You do not need detailed designs to describe the result you want.\n\nFor example, a service business might write: “People referred by existing clients should understand our two main services and be able to send a qualified inquiry on a phone.” That tells the project team more than “build a modern site.” Write down what you want to learn after launch, such as whether new inquiries include the information your team needs to respond.",
+        "heading": "Explain the customer action and define the first release"
+      },
+      {
+        "body": "Turn the goal into a short first-release page list. Include the homepage, essential service pages, proof such as case studies you have permission to share, and the contact route. Describe any requirements that affect the build, such as two languages, an existing appointment tool, a protected area or migration from an old address.\n\nBeside each item, record who provides copy, photos and approval. Note which material is ready and which still needs work. Group optional requests into a later list. A booking link and a reservation system are different commitments, so describe what the system needs to do before putting it in the launch scope.",
+        "heading": "List essential pages, content and integrations"
+      },
+      {
+        "body": "Give the project one decision owner and identify everyone who must review sensitive business details, brand material or policy copy. Set a practical turnaround for feedback because unresolved approvals can delay a release. If a deadline matters, say why and identify which items can move to a later release.\n\nClarify who owns the domain, hosting, source repository and third-party accounts. Give the project team appropriate access instead of including passwords in the brief. Record what your team expects to receive at handover, such as the source code, deployment instructions and ownership of relevant credentials or subscriptions. Get these points agreed in the project scope.",
+        "heading": "Name the people and accounts involved"
+      },
+      {
+        "body": "Use concrete examples rather than “everything works.” On a phone, a visitor can open the menu, read a service page and reach the inquiry form. When they send a test request, someone receives it in the company inbox and can reply. The site opens under its correct domain, and old important links reach their planned destinations. If staff will update content, ask the named editor to try the update before signing off.\n\nDefine the handoff point for any system the website links to. If appointment booking is managed by another service, decide what your site must pass to it and who checks the booking response. A usable acceptance list makes these responsibilities visible to both teams.",
+        "heading": "Write acceptance checks you can actually run"
+      },
+      {
+        "body": "A workable brief can be a few pages or a shared document. Group it by audience, goals, launch scope, responsibilities and checks. Mark open questions with an owner and date instead of making assumptions about work that still needs a decision. Use the brief to compare proposals and return to it before launch to confirm the release still meets the original goal.",
+        "heading": "Keep it short and update it as decisions change"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "What to include in a website project brief | Cedar & Cursor",
+    "seoDescription": "Write a practical website brief covering customer journeys, first-release scope, content owners, access, approvals, handover and acceptance checks."
+  },
+  {
+    "slug": "website-performance-for-small-business",
+    "title": "Website performance improvements a small team can maintain",
+    "category": "Web",
+    "summary": "Measure a few important pages, improve their largest bottlenecks and keep a repeatable check your team can run after changes.",
+    "minutes": 3,
+    "cover": "upload:8960f94b-922e-46e7-a127-c4a558ad7566",
+    "publishedAt": "2026-11-27T12:02:45.757442+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.757442+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "A phone showing a loading page beside a stopwatch and performance charts.",
+    "sections": [
+      {
+        "body": "A small team should start by measuring its homepage, a key service page and the contact path. Find what delays useful content or prevents a visitor from acting, then change the largest cause first. Focus on the experience a visitor can feel: how long the key content takes to appear, whether the page jumps and whether the first tap responds promptly.\n\nRun a repeatable check from the same location and device settings. A controlled test helps you reproduce a problem and compare two versions. Where enough real-user data exists, compare it with that test. Visitors use different devices and networks, so one fast run on your office computer tells you very little about how the site works for everyone.",
+        "heading": "Measure before choosing what to fix"
+      },
+      {
+        "body": "Look at the largest images and videos early. A photo that fills a desktop hero may need more detail than a card thumbnail. Serve sizes that fit each placement, compress the source and reserve the image’s display space so text and buttons do not jump when it loads.\n\nLet images farther down the page load when a visitor gets closer to them. Keep the primary image that needs to appear immediately available early. In a restaurant example, a responsive header photo and small menu thumbnails usually fit the visitor’s task better than downloading a full gallery on the first screen. Check that readable pictures and useful alt text survive any changes.",
+        "heading": "Match image size to the job"
+      },
+      {
+        "body": "List the scripts and services on the opening page. Keep the work required to show the menu, main content or contact action. Delay optional widgets until they are needed, and remove unused trackers or embeds. If a demo is important, ensure it does not block the surrounding text or controls while it loads.\n\nReview font needs and motion as well. Use a practical set of fonts and weights, and honor reduced-motion settings. Prefer lightweight effects for movement tied to scrolling or the pointer. Recheck whether the visitor can use the main menu while the rest of the page is still loading.",
+        "heading": "Reduce work before the first interaction"
+      },
+      {
+        "body": "Take a baseline and repeat it after one change. A smaller download or faster initial display is helpful, but a new layout shift or a blocked action can cancel the benefit. Open the revised page on a phone using a slower connection, follow a navigation link and submit a safe test form. Compare results with the earlier run under the same conditions.\n\nRecord the issue, which pages it affects, what changed and the next check to run. Use measurements that help you make a decision, rather than trying to improve a score without knowing what the visitor gains.",
+        "heading": "Check the change against a real journey"
+      },
+      {
+        "body": "Give the person adding content a few rules they can follow, such as choosing the correct image size and reviewing the page on a phone. Recheck after adding a new font, script, large cover image or interactive section. A short review after meaningful changes is easier to sustain than an occasional cleanup after the site becomes slow.",
+        "heading": "Make performance part of everyday publishing"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "Website performance for small businesses | Cedar & Cursor",
+    "seoDescription": "Measure the pages that matter and improve image loading, layout stability and interaction speed without adding maintenance your team cannot sustain."
+  },
+  {
+    "slug": "contact-form-delivery-setup",
+    "title": "How to make a website contact form reach your inbox",
+    "category": "Web",
+    "summary": "Use a verified sender, set Reply-To correctly, and confirm delivery in the destination inbox with a test from the deployed site.",
+    "minutes": 3,
+    "cover": "upload:3475c603-9ea2-463c-94fe-3740f11c5f28",
+    "publishedAt": "2026-11-27T12:02:45.754163+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.754163+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "A laptop showing a contact form and delivery check beside a paper envelope and message cards.",
+    "sections": [
+      {
+        "body": "A reliable contact form sends mail from a verified company address, places the visitor’s address in Reply-To and gives the team a way to confirm the message arrived. Treat all three as part of the setup. A pretty form that returns a reference but never reaches the team still leaves the visitor without a response.\n\nIn a setup where a sending service delivers to an existing company mailbox, keep their roles separate. The sending service handles outgoing mail from the website. The mailbox is where people receive inquiries and reply. Verify the sender for the service you actually use. Add only the DNS records that service calls for, and preserve the inbound records for your existing mailbox.",
+        "heading": "Send from your domain and reply to the visitor"
+      },
+      {
+        "body": "Use a server-side endpoint with a fixed company recipient. The form should collect the information needed to respond, such as the visitor’s name, email and project description. It should not let someone change where the application sends messages or select arbitrary recipients. Keep sending credentials in server settings and out of client-side code.\n\nFormat the message so the team can answer it quickly. Include the project description, visitor details and a reference that can be compared with delivery records. Put the verified company sender in From and the visitor’s address in Reply-To. Ask visitors for their reply address and let them know what the team will use it for.",
+        "heading": "Keep the route and credentials on the server"
+      },
+      {
+        "body": "When a mail service accepts a request, it means the service accepted the message for processing. It may still fail later. A delivery status can indicate that the receiving system accepted the message. It does not establish that a person read it, and it may still appear in spam or quarantine rather than the inbox.\n\nTell a visitor that their inquiry was submitted only after the send request succeeds. If the request fails, retain the typed content and show a way to try again or contact the business directly. If a timeout leaves the result uncertain, repeating the same request with the same reference can help avoid duplicate messages when the service supports that behavior.",
+        "heading": "Separate accepted, delivered and read"
+      },
+      {
+        "body": "Use the production form with a safe test message and a reply address you control. Check the browser’s confirmation, find the matching message in the destination mailbox, and click Reply to verify the address. Repeat after changing a sender, domain setting or hosting environment. A preview can have different credentials from production, so a preview success is useful without being the final launch check.\n\nIf the message does not arrive, compare the reference with the send records and review spam or quarantine. Keep the public company email visible, and assign someone to review failed deliveries and unanswered inquiries. The form is reliable only when the team knows how to notice and recover from a failure.",
+        "heading": "Rehearse the full path on the deployed site"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "Reliable website contact form delivery | Cedar & Cursor",
+    "seoDescription": "Set up reliable contact form delivery with a verified sender, Reply-To, accurate success messages and an end-to-end test on the deployed website."
+  },
+  {
+    "slug": "website-redesign-without-losing-search-traffic",
+    "title": "How to protect search traffic during a website redesign",
+    "category": "Web",
+    "summary": "Keep useful URLs when you can, map those that change, and verify which pages still bring qualified visitors after launch.",
+    "minutes": 3,
+    "cover": "upload:625f3c05-1771-4a67-9fb1-5b7b826938cd",
+    "publishedAt": "2026-11-27T12:02:45.750798+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.750798+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "Two versions of a business website with arrows connecting old and new pages.",
+    "sections": [
+      {
+        "body": "The most reliable redesign starts with keeping the addresses of pages people already find and use. If an address has to change, map it to the most relevant replacement and set up a permanent server-side redirect. Check the result before sending visitors to the redesigned site. Even a careful migration can cause a temporary change in search visibility while engines reprocess pages.\n\nSeparate redesign decisions from URL changes. You can rewrite a service page or improve its layout without moving it. Keep its address when the page still answers the same question and no technical or business requirement calls for a new one.",
+        "heading": "Keep useful URLs and map the rest"
+      },
+      {
+        "body": "Start with the sitemap, main navigation and internal links. Add landing pages that receive visits, important pages linked from other sites and links from brochures, emails or profiles. Include valuable resources such as a frequently shared PDF or a guide people use to choose a service.\n\nFor each URL, record what the visitor expects, the page’s purpose and whether you will keep, move, merge or remove it. A long list of addresses is less useful than a shorter list that explains which pages create inquiries or support existing customers. Save a baseline report for later comparison before you replace the old site.",
+        "heading": "Inventory the site before editing it"
+      },
+      {
+        "body": "For example, if an old web development page moves to a new web development guide, redirect the old address directly to the new guide. If two pages genuinely answer the same question and you combine them, both old addresses may lead to the consolidated page. Avoid sending unrelated pages to the homepage just to prevent a 404. Return a clear missing-page response when there is no useful replacement.\n\nTest representative links, any variants that received traffic and any advertised landing pages. Check for loops and redirect chains. Update the new site’s internal links to the final pages so visitors do not pass through old addresses unnecessarily.",
+        "heading": "Map old pages to useful destinations"
+      },
+      {
+        "body": "Confirm that new pages are available under the intended production host and use canonical URLs for their final addresses. Build the updated sitemap from pages you want indexed. Check that temporary preview restrictions, such as a noindex tag on a staging site, have not been copied to production. Review the most important pages for missing text, changed intent and broken calls to action as well as technical errors.\n\nAgree on a rollback trigger before launch. A critical redirect failure, a broken site-wide form or a broad indexing block needs a faster response than a normal short-term change in traffic.",
+        "heading": "Rehearse the cutover"
+      },
+      {
+        "body": "Use search reports and targeted URL checks to see whether important new pages are being discovered and old addresses redirect as planned. Track qualified inquiries alongside search clicks so you see whether the redesigned journeys still work. Investigate specific pages that drop out, instead of guessing from one day of site-wide traffic. Keep important redirects available for old links and bookmarks.",
+        "heading": "Watch the right signals afterwards"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "Preserve search traffic during a website redesign | Cedar & Cursor",
+    "seoDescription": "Protect existing search traffic during a redesign by inventorying pages, mapping redirects, checking canonical URLs and reviewing post-launch search reports."
+  },
+  {
+    "slug": "business-website-budget",
+    "title": "What should you budget for a business website?",
+    "category": "Web",
+    "summary": "A practical way to separate the essentials from the features that can wait.",
+    "minutes": 1,
+    "cover": "upload:540714cf-ebe0-428b-a201-7485de4c9536",
+    "publishedAt": "2026-11-24T19:05:21.457523+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.741079+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "Laptop showing a draft business website beside a calculator and stacks of budget cards.",
+    "sections": [
+      {
+        "body": "A business website should answer the questions your customers actually ask. A restaurant needs menus, opening information and a clear way to book or contact the team. A service business may need a description of its work, credible examples and a way to request a quote. Start there before selecting a technology stack.",
+        "heading": "Start with the job the website needs to do"
+      },
+      {
+        "body": "The initial build covers the agreed pages, interface and development. Recurring costs may include hosting, a domain, email, software subscriptions and maintenance. Ask which of these are included in the quote and who controls the accounts. Content writing and translations also need a clearly defined owner.",
+        "heading": "Separate the initial build from ongoing costs"
+      },
+      {
+        "body": "A small, well-tested site with useful content can be more effective than a larger site with unfinished features. Identify what must be present at launch, what can be added later and what success looks like. Our guided estimator is a planning aid, not a binding price.",
+        "heading": "Plan an achievable first release"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "",
+    "seoDescription": ""
+  },
+  {
+    "slug": "when-to-build-custom-software",
+    "title": "When does a business need custom software?",
+    "category": "Software",
+    "summary": "How to spot the point where spreadsheets and disconnected tools stop being enough.",
+    "minutes": 1,
+    "cover": "upload:473756fe-0220-4cf3-a10e-a896200f5693",
+    "publishedAt": "2026-11-24T19:05:21.457523+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.742909+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "Tablet showing a workflow diagram beside paper spreadsheets and organized work cards.",
+    "sections": [
+      {
+        "body": "Repeated manual copying, inconsistent records and unclear access permissions can signal a workflow problem. Record the steps and the people involved before deciding to replace the tools. Measure the time spent on the process and the cost of mistakes where possible.",
+        "heading": "Look for recurring friction"
+      },
+      {
+        "body": "An existing product may solve the problem more cheaply and with less maintenance. Custom development makes more sense when the workflow is distinctive, the integrations are essential or a product cannot support the required access controls. Consider migration and ongoing ownership, not just the first build.",
+        "heading": "Compare building with buying"
+      },
+      {
+        "body": "Choose a bounded process and define its acceptance criteria. Keep data access, backups and auditability in the design from the beginning. Review a working prototype with the people who will use it before expanding the scope.",
+        "heading": "Start with one workflow"
+      }
+    ],
+    "tags": [],
+    "seoTitle": "",
+    "seoDescription": ""
+  },
+  {
+    "slug": "practical-ai-for-business",
+    "title": "Where AI actually helps a small business",
+    "category": "AI",
+    "summary": "Choose useful, measurable workflows before adding an AI assistant to everything.",
+    "minutes": 1,
+    "cover": "upload:bf898a2b-2e0d-410d-b37e-895a52b1b6ad",
+    "publishedAt": "2026-11-24T19:05:21.457523+00:00",
+    "modifiedAt": "2026-11-27T12:02:45.746929+00:00",
+    "noindex": false,
+    "author": "Cedar & Cursor",
+    "coverAlt": "A person checks an AI assistant's on-screen answer against a printed business document.",
+    "sections": [],
+    "tags": [],
+    "seoTitle": "",
+    "seoDescription": "",
+    "document": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "text": "Choose the right problem",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "text": "A knowledge assistant can help staff find information in existing policies or documentation. An automation can help organize routine requests. Neither needs to replace human judgment. Start with a task where the input, expected output and review process are clear.",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "type": "horizontalRule"
+        },
+        {
+          "type": "blockquote",
+          "content": [
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 2
+              },
+              "content": [
+                {
+                  "text": "Build in boundaries",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "text": "Decide which information may be used, who can access it and what should never leave your systems. AI-generated answers can be incorrect, so provide sources where available and allow people to escalate uncertain requests. Test the system with realistic examples before relying on it.",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "type": "horizontalRule"
+        },
+        {
+          "type": "blockquote",
+          "content": [
+            {
+              "type": "heading",
+              "attrs": {
+                "level": 2
+              },
+              "content": [
+                {
+                  "text": "Evaluate before expanding",
+                  "type": "text"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "text": "Compare the new workflow against your current process using relevant measures such as time saved, correction rates and user satisfaction. Include the cost of running and maintaining the system. Expand only where the results justify it.",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        }
+      ]
+    }
+  }
+]

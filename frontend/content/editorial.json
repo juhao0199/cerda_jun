@@ -1,0 +1,165 @@
+{
+  "website": {
+    "homeTitle": "Cedar & Cursor | Web Development, Software & AI Automation",
+    "homeDescription": "Cedar & Cursor designs and builds business websites, custom software and AI workflows. Explore our work, compare services and plan a first release.",
+    "blogTitle": "Web, Software & AI Guides for Businesses | Cedar & Cursor",
+    "blogDescription": "Practical guides from Cedar & Cursor on budgeting for a business website, deciding when to build custom software and piloting useful AI workflows.",
+    "copy": {
+      "heroIntro": "Cedar & Cursor builds business websites, custom software and AI workflows. We help you decide what to build first, agree what success looks like and ship a release your team can run.",
+      "servicesHeading": "What we build",
+      "servicesIntro": "Explore websites, business software, AI automation and ongoing support. Use the estimator to compare possible scopes before requesting a quote.",
+      "aboutIntro": "Cedar & Cursor is a digital technology studio for businesses that need a customer-facing website, a better internal workflow or a carefully scoped AI system. We bring together interface design and software engineering so the solution fits the way your team works and can be maintained after launch.",
+      "faqHeading": "Questions about working with Cedar & Cursor",
+      "faqIntro": "What to expect when you scope a project, request a quote, move an existing site or plan for support.",
+      "guidanceHeading": "How to prepare for a build",
+      "guidanceIntro": "Use these questions to set boundaries, choose a first release and know what to review before launch.",
+      "insightsHeading": "Guides for your next technology decision",
+      "insightsIntro": "Learn how to budget for a website, decide whether custom software is justified and test an AI workflow on a useful task."
+    },
+    "faq": [
+      {
+        "question": "What kinds of projects does Cedar & Cursor build?",
+        "answer": "We build business websites, landing pages, digital menus and e-commerce experiences, as well as dashboards, workflow software, integrations and AI assistants. Choose a website when the main job is helping customers find and act on information. Choose business software when staff need to manage records or enforce a repeatable process. For AI, start with a narrow task and an owner who can verify the result."
+      },
+      {
+        "question": "How much does a website or software project cost?",
+        "answer": "Use the guided estimator for an indicative USD range. It varies the range by project type, selected capabilities and whether you are starting fresh or replacing a system. A quote follows a review of deliverables, integrations, content, migration and the release date. Confirm hosting, taxes, third-party fees and ongoing support separately. The estimator helps you plan a budget and does not create a binding quote."
+      },
+      {
+        "question": "What happens after I send a project inquiry?",
+        "answer": "An inquiry gives us context to review whether your project fits our services and what needs clarification. Tell us what you want people to do, what currently gets in the way, and any deadline or existing tools we must account for. A brief can include an estimate, but submitting it does not approve a price, reserve a launch date or start paid work."
+      },
+      {
+        "question": "How long will it take to launch?",
+        "answer": "A launch date depends on the first release you agree, the readiness of copy and images, integration access and who can approve changes. A brochure site with ready content has fewer dependencies than a site with payments, migration or multiple languages. Name any fixed date early. We can identify what must ship by that date and what can move to a later release before agreeing a schedule."
+      },
+      {
+        "question": "Can you redesign an existing website without losing its search visibility?",
+        "answer": "We can review your current site and plan a migration around its important URLs, forms and content. Bring a page list, analytics or Search Console access if you have them, and a list of integrations. A migration plan can preserve useful URLs, map changed addresses to relevant redirects and check the destination pages after launch. Search rankings can still change, so agree what needs monitoring."
+      },
+      {
+        "question": "Who owns the source code, domain and hosting accounts?",
+        "answer": "The written agreement defines which deliverables transfer, when they transfer and which dependencies have third-party licenses. Before work starts, decide who owns the domain, repository, hosting and any subscriptions. At handover, list the permissions and documentation your team needs to run the agreed release. Separating account ownership from temporary project access makes a future handoff easier."
+      },
+      {
+        "question": "Can my team update content after launch?",
+        "answer": "Yes, if content editing is included in the scope. Decide which pages, menus, prices or articles change often and who should draft, review and publish changes. A content system can make those edits manageable without code changes. Ask for an editor walkthrough and agree which design or functionality changes will still need development."
+      },
+      {
+        "question": "Do you offer maintenance after launch?",
+        "answer": "Maintenance can be agreed separately. A useful support scope lists what is covered, such as dependency updates, bug fixes or performance checks, and names the person responsible for each service. Agree how incidents are reported, the expected response window and which requests count as new work. Domain, hosting and service subscriptions should have a clear renewal owner."
+      },
+      {
+        "question": "Can you guarantee search rankings or inclusion in AI answers?",
+        "answer": "Search engines and answer systems choose what to show, so we cannot guarantee a position or a citation. A website can give them accessible, crawlable pages with descriptive titles, consistent URLs and useful answers that match the visible content. If search work is part of the project, agree what will be built, how it will be checked and who will monitor results after launch."
+      }
+    ],
+    "guidance": [
+      {
+        "question": "Do I need a complete specification to get started?",
+        "answer": "A short brief is enough to start. Describe who will use the product, what action they need to complete, and where the current experience fails. Include examples of existing forms, tools or pages you can share safely, and say what you cannot change. An initial discussion can turn that material into a first release with clear acceptance criteria and exclusions."
+      },
+      {
+        "question": "How do we choose what goes into a first release?",
+        "answer": "Start with one journey that solves a specific problem from end to end. For a restaurant site, that could mean helping a guest find the menu, opening hours and the next step toward a visit. For a staff tool, it could mean recording and routing one type of request. Set a testable goal, then defer improvements that do not affect that journey."
+      },
+      {
+        "question": "Can you connect tools we already use?",
+        "answer": "We can assess integration options where the existing tool exposes a supported API, webhook or export. Identify the source of truth, direction of data flow, required permissions and what staff should do when synchronization fails. We review account limits, subscription costs and the work needed to clean up data before proposing an integration."
+      },
+      {
+        "question": "How do you check whether an AI assistant is reliable enough to use?",
+        "answer": "Agree which sources it may use and collect examples of expected answers, ambiguous requests and questions it should decline. Test whether the system can cite the right source, hold the right access boundary and ask for help when evidence is missing. Start with a small group and keep human approval for consequential decisions. Expand only when the evaluation supports it."
+      },
+      {
+        "question": "What should we decide about data access and privacy before building?",
+        "answer": "Write down what data the product needs, who can see it and which providers will process it. Map roles to concrete actions such as viewing, exporting and deleting records. Agree who handles deletion, backups, access reviews and offboarding. Use representative examples without sharing production credentials or sensitive records in a project brief."
+      },
+      {
+        "question": "What should our team review before launch?",
+        "answer": "Review the most important user journey on a phone as well as on a desktop. Test navigation, forms and failure messages with representative data. For signed-in software, check that each role can perform only its agreed actions. Assign an approver for content and scope, and agree how the team will handle a launch issue or roll back a change."
+      },
+      {
+        "question": "What should be included in handover?",
+        "answer": "Agree a handover list before launch. Depending on scope, it can include account ownership and access, instructions to edit content, deployment notes, recovery procedures and a list of paid services. Make sure your team knows whom to contact for a bug, which changes it can make independently and when each subscription renews."
+      }
+    ]
+  },
+  "insights": {
+    "business-website-budget": {
+      "seoTitle": "Business Website Budget Guide | Cedar & Cursor",
+      "seoDescription": "Build a business website budget by separating launch scope, content, integrations and ongoing costs. Use this checklist to compare quotes on the same basis.",
+      "summary": "Separate the cost of launching a useful business website from ongoing expenses, then compare quotes against the same scope.",
+      "takeaway": "Budget for the smallest customer journey that works from start to finish, then account for everything needed to keep it running. Compare quotes against the same pages, content ownership, integrations, handover and recurring fees.",
+      "sectionsToAppend": [
+        {
+          "heading": "Write a scope brief before asking for prices",
+          "body": "Start with the action that matters, such as asking for a quote, viewing a menu or completing a booking. List the pages required to support that action, what must happen on mobile, and what a successful submission looks like. Add the items you already own, such as a domain, brand files, product photos and written copy. Identify the gaps and assign someone to supply each missing item.\n\nFor a restaurant, a first release could cover the menu, hours, directions and a booking link. An ordering system with stock and payments involves separate account setup, operating processes and testing. Treat it as a separate decision instead of hiding it inside the word “website.”"
+        },
+        {
+          "heading": "Compare quotes against the same checklist",
+          "body": "Ask each provider for the set of pages and page templates, who writes and uploads copy, how revisions work, which integrations are included, and how mobile and accessibility are checked. If you are moving an existing website, include URL redirects, content migration and a launch plan. Ask who owns the accounts and what you receive at handover.\n\nCompare exclusions as carefully as inclusions. A low initial figure may rely on your team supplying finished content or managing forms and domain records. If those jobs have no owner, put them into the scope before you compare the numbers."
+        },
+        {
+          "heading": "Separate recurring spend from the launch quote",
+          "body": "Record which costs repeat, who pays them and how often they renew. The list may include the domain, hosting, email, payment services, add-ons and maintenance. Divide costs that vary with use from fixed subscriptions. If the website depends on integrations, ask what happens when a provider changes pricing or your usage grows."
+        },
+        {
+          "heading": "Use a range to plan, then confirm the deliverables",
+          "body": "An estimator can give you a planning range from the type of project, the features you select and the stage you are at. Record its assumptions alongside the range, including what you can supply yourself. A quote should then confirm the scope, dependencies and release criteria that a calculator cannot determine on its own."
+        }
+      ],
+      "related": ["when-to-build-custom-software"]
+    },
+    "when-to-build-custom-software": {
+      "seoTitle": "When to Build Custom Software for Your Business | Cedar & Cursor",
+      "seoDescription": "Decide when custom business software is justified. Compare software you already have, off-the-shelf products and a focused build against one workflow.",
+      "summary": "Use one recurring workflow to compare the tools you already have, off-the-shelf software and a focused custom build.",
+      "takeaway": "Build custom software when an important recurring workflow has requirements your current tools cannot meet at a reasonable cost. Test those requirements against a configurable product and a smaller integration before committing to a build.",
+      "sectionsToAppend": [
+        {
+          "heading": "Map a real workflow before choosing software",
+          "body": "Watch a staff member complete a recent case. Write down where it starts, which tools they use, who approves it and how the result is recorded. Look for repeated copying, missing ownership, delayed handoffs and errors that require someone to reconstruct what happened. Record frequency and staff time over a representative period. This becomes the baseline for judging any replacement."
+        },
+        {
+          "heading": "Compare three ways of fixing the problem",
+          "body": "First, check if a process change or configuration in your existing tool can remove the friction. Next, review a supported integration or an off-the-shelf product using one real scenario plus its exceptions. Consider a custom build when neither option can meet important process, permission, data ownership or integration requirements. Ask each option to handle the same examples so you can compare it fairly."
+        },
+        {
+          "heading": "Pilot one end-to-end workflow",
+          "body": "For an internal approval workflow, a first release could capture a request, route it to the right approver and record the decision. Test duplicate submissions, approver absences, rejected requests and permission boundaries. Keep an export or recovery path so the team can continue work during a problem. Compare the pilot with your baseline before expanding to more departments or workflows."
+        },
+        {
+          "heading": "Allow for migration and ownership",
+          "body": "Name someone to own data quality, access and post-launch changes. Plan how records move from the current tools, which entries should stay archived, and how people can export their work. Include hosting, integrations, updates, training and backup checks in the comparison. A custom solution only pays off if it remains useful after the first release."
+        }
+      ],
+      "related": ["business-website-budget", "practical-ai-for-business"]
+    },
+    "practical-ai-for-business": {
+      "seoTitle": "Practical AI for Small Businesses | Cedar & Cursor",
+      "seoDescription": "Choose an AI workflow your small business can test. Set trusted sources, define human review and compare the pilot with your current process.",
+      "summary": "Choose a useful workflow, define what the AI may use and measure whether a small pilot beats your current process.",
+      "takeaway": "Start with a repeatable task that has trustworthy inputs and a result someone can check. Establish a baseline and test errors, scope boundaries and what happens when the system cannot answer before using it broadly.",
+      "sectionsToAppend": [
+        {
+          "heading": "Choose an example with a clear review step",
+          "body": "A team that repeatedly answers questions from its internal handbook could pilot an assistant that points to the relevant approved page. A team copying incoming requests into a tracker could pilot classification and routing for a staff member to approve. A task with no clear right answer, missing records or no available reviewer is a poor starting point."
+        },
+        {
+          "heading": "Define what information the AI may use",
+          "body": "List approved sources, the owner of each source and which roles are allowed to see the contents. Exclude sensitive data the task does not require. Decide what the assistant should say when sources conflict or cannot support an answer. Plan how people will correct an outdated source and how changed permissions affect future answers."
+        },
+        {
+          "heading": "Test the workflow before anyone depends on it",
+          "body": "Build a small test set from typical questions and difficult edge cases. Include outdated instructions, restricted records, ambiguous requests and examples where the correct response is to escalate. Ask reviewers to check both the answer and its evidence. Count how often staff need to correct it and check whether it saves enough effort after review to justify adoption."
+        },
+        {
+          "heading": "Use simple automation for deterministic rules",
+          "body": "Use a fixed rule when the inputs and decision are well defined, such as tagging by an approved category code or routing to a known approver. Reserve AI for tasks that need to interpret varied language, such as summarizing free-text requests. You can combine the two by having AI propose a category, validating that category against allowed values and leaving the final decision to a person."
+        }
+      ],
+      "related": ["when-to-build-custom-software"]
+    }
+  }
+}

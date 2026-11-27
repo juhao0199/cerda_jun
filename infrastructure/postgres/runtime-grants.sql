@@ -42,3 +42,14 @@ GRANT UPDATE (status, version, post_id) ON blog_contentopportunity TO cedar_runt
 -- Competitor reports are immutable; classification is versioned.
 REVOKE UPDATE, DELETE ON blog_competitorintelligence FROM cedar_runtime;
 GRANT UPDATE (kind) ON blog_competitor TO cedar_runtime;
+
+-- Website content is a seeded singleton; revision snapshots are append-only.
+REVOKE INSERT, DELETE ON blog_websitecontent FROM cedar_runtime;
+REVOKE UPDATE, DELETE ON blog_websiterevision FROM cedar_runtime;
+
+-- Editorial plans retain history; events are append-only.
+REVOKE DELETE ON blog_publishingplan FROM cedar_runtime;
+REVOKE UPDATE, DELETE ON blog_publishingevent FROM cedar_runtime;
+
+-- Content planning history is retained via archive, not hard deletion.
+REVOKE DELETE ON blog_contenttask, blog_topiccluster FROM cedar_runtime;

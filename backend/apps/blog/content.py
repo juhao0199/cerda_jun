@@ -1,6 +1,8 @@
 from .rich_content import normalize_document, word_count
 import re
 
+STARTER_PLACEHOLDER = 'Replace this placeholder with the reviewed article before publication.'
+
 COVERS = ('', 'web', 'software', 'ai')
 UPLOAD_COVER = re.compile(r'upload:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\Z')
 SLUG = re.compile(r'[a-z0-9]+(?:-[a-z0-9]+)*\Z')

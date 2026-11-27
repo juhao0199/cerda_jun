@@ -1,0 +1,9 @@
+import {websiteDefaults,type SiteCopy} from '@/lib/website-content';
+import Link from 'next/link';
+import {coverPath,type PublicPost} from '@/lib/blog-content';
+export function InsightsView({all=false,page=1,copy=websiteDefaults.copy,result}:{all?:boolean;page?:number;copy?:SiteCopy;result:{results:PublicPost[];hasMore:boolean}}){
+  const Heading = all ? 'h1' : 'h2';
+  const ItemHeading = all ? 'h2' : 'h3';
+  const posts=all?result.results:result.results.slice(0,3);
+  return <section className="section insights" id="insights"><div className="wrap"><div className="section-head"><Heading>{all?'Insights.':copy.insightsHeading}</Heading><p>{copy.insightsIntro}</p></div><div className="insight-list">{posts.map((p,i)=><article key={p.slug}><Link className="insight-link" href={`/blog/${p.slug}`}><div className="insight-meta"><span>{String((page-1)*24+i+1).padStart(2,'0')} / {p.category}</span><small>{p.minutes} min read</small></div><div className="insight-content">{coverPath(p.cover)&&<img className="insight-cover" src={coverPath(p.cover)!} alt={p.coverAlt??''} loading="lazy"/>}<div><ItemHeading>{p.title}</ItemHeading><p>{p.summary}</p></div></div><span className="insight-arrow" aria-hidden="true">↗</span></Link></article>)}</div>{posts.length===0&&<p>No published articles on this page.</p>}{all?<nav aria-label="Blog pagination" className="blog-pagination">{page>1&&<Link className="textbtn" href={page===2?'/blog':`/blog?page=${page-1}`}>← Previous</Link>}{result.hasMore&&<Link className="textbtn" href={`/blog?page=${page+1}`}>Next →</Link>}<a className="textbtn" href="/rss.xml">RSS ↗</a></nav>:<Link className="textbtn" href="/blog">Read the blog ↗</Link>}</div></section>;
+}

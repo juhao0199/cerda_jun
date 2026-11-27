@@ -7,11 +7,12 @@ from apps.accounts.views import fail, json_post, require_role
 from apps.accounts.security import audit, reserve_attempt
 from apps.inquiries.crm import locked_role
 from .competitors import strings, cid, competitor_row
-from .models import Competitor, CompetitorIntelligence, Post
+from .models import Competitor, CompetitorIntelligence, Post, WebsiteContent
 from .competitor_rules import visible_text
 from .intelligence_engine import published_headings
 from .intelligence_engine import scan
-from .intelligence_pro import VERSION, OWN_SECTIONS, own_section_matches, historical_delta
+from .intelligence_pro import VERSION, historical_delta
+from .website_rules import effective, published_section_matches, SECTION_INDEX
 from django.db.models import Q
 
 KINDS=('unclassified','direct','indirect','reference')
@@ -120,4 +121,6 @@ def compare(request):
     rows=list(Post.objects.filter(status='published',published__isnull=False,published_at__isnull=False).order_by('id').values('slug','published')[:201])
     own=[{'slug':r['slug'],'title':r['published']['title']} for r in rows[:200] if phrase in published_headings(r['published'])]
     own_body=sum(phrase in visible_text(r['published']) for r in rows[:200])
-    return JsonResponse({'competitorScanned':len(measured),'competitorMatches':others,'ownScanned':min(200,len(rows)),'ownMatches':own[:50],'ownMatchCount':len(own),'ownBodyMatchCount':own_body,'ownComplete':len(rows)<=200,'ownSectionCount':len(OWN_SECTIONS),'ownSectionMatches':own_section_matches(phrase),'ownSectionScope':'Curated local homepage section labels and headings; not a live or complete site scan.'})
+    site = WebsiteContent.objects.filter(pk=1).first()
+    sections = effective(site.published if site else {})
+    return JsonResponse({'competitorScanned':len(measured),'competitorMatches':others,'ownScanned':min(200,len(rows)),'ownMatches':own[:50],'ownMatchCount':len(own),'ownBodyMatchCount':own_body,'ownComplete':len(rows)<=200,'ownSectionCount':len(SECTION_INDEX),'ownSectionMatches':published_section_matches(sections, phrase),'ownSectionScope':'Published homepage copy and fixed section labels; not a live DOM scan.'})
