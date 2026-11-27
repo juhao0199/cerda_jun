@@ -32,9 +32,9 @@ export default async function Home() {
     <ProjectBuilder copy={copy} endpoint={endpoint} contactEmail={studioEmail} afterEstimate={<>
       <section className="section" id="service-guides">
         <div className="wrap">
-          <div className="section-head"><h2>Choose the right first project.</h2><p>See what to prepare, scope and test before committing to a build.</p></div>
+          <div className="section-head" data-cedar-reveal="copy"><h2>Choose the right first project.</h2><p>See what to prepare, scope and test before committing to a build.</p></div>
           <div className="service-guide-grid">
-            {servicePages.map(service => <Link className="service-guide" href={`/services/${service.slug}`} key={service.slug}>
+            {servicePages.map(service => <Link className="service-guide" data-cedar-reveal="card" data-cedar-spotlight="card" href={`/services/${service.slug}`} key={service.slug}>
               <strong>{service.label}</strong><p>{service.summary}</p><span>Read the guide</span>
             </Link>)}
           </div>
@@ -44,7 +44,7 @@ export default async function Home() {
       <Process copy={copy} />
       <Insights copy={copy} />
       <section className="section about-section" id="about">
-        <div className="wrap about"><h2>{copy.aboutHeading}</h2><div><p>{copy.aboutIntro}</p><p className="tagline">Rooted in craft. Built for tomorrow.</p></div></div>
+        <div className="wrap about"><h2 data-cedar-reveal="copy">{copy.aboutHeading}</h2><div data-cedar-reveal="copy"><p>{copy.aboutIntro}</p><p className="tagline">Rooted in craft. Built for tomorrow.</p></div></div>
       </section>
       <FAQ copy={copy} questions={fields.faq} />
     </>} />

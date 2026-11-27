@@ -1,0 +1,163 @@
+[data-cedar-media] {
+  display: block;
+  overflow: hidden;
+}
+
+[data-cedar-media='feature'] {
+  margin-block-end: 32px;
+  border: 1px solid #333;
+}
+
+[data-cedar-media='feature'] > img.blog-cover {
+  margin: 0;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :is([data-cedar-public], [data-cedar-route]) {
+    --cedar-ease: cubic-bezier(.2, .72, .23, 1);
+  }
+
+  [data-cedar-reveal][data-cedar-entered] {
+    --cedar-rise: 22px;
+    --cedar-start-opacity: .62;
+    --cedar-start-scale: 1;
+    animation: cedarEntrance 680ms var(--cedar-ease) var(--cedar-delay, 0ms) backwards;
+  }
+
+  [data-cedar-reveal='surface'][data-cedar-entered] {
+    --cedar-rise: 28px;
+    --cedar-start-opacity: .7;
+    --cedar-start-scale: .982;
+    animation-duration: 800ms;
+  }
+
+  [data-cedar-reveal='card'][data-cedar-entered] {
+    --cedar-rise: 23px;
+    --cedar-start-opacity: .76;
+    --cedar-start-scale: .978;
+  }
+
+  [data-cedar-route] {
+    animation: cedarRouteEnter 470ms var(--cedar-ease);
+  }
+
+  [data-cedar-route='hero'] {
+    animation-duration: 700ms;
+  }
+
+  [data-cedar-public] .btn {
+    transition: background .2s, color .2s, border-color .2s, transform .28s var(--cedar-ease), scale .26s var(--cedar-ease);
+  }
+
+  [data-cedar-public] :is(.btn, .textbtn):active {
+    scale: .975;
+  }
+
+  [data-cedar-switch] {
+    animation: cedarRouteEnter 420ms var(--cedar-ease);
+  }
+
+  [data-cedar-reveal][data-cedar-entered]:is(:focus-visible, :has(:focus-visible)) {
+    animation: none;
+  }
+
+  @media (min-width: 981px) {
+    [data-cedar-reveal='card']:nth-child(3n + 2) { --cedar-delay: 55ms; }
+    [data-cedar-reveal='card']:nth-child(3n + 3) { --cedar-delay: 105ms; }
+  }
+
+  @media (min-width: 601px) and (max-width: 980px) {
+    [data-cedar-reveal='card']:nth-child(even) { --cedar-delay: 56ms; }
+  }
+
+  @media (max-width: 600px) {
+    [data-cedar-reveal][data-cedar-entered] {
+      --cedar-rise: 13px;
+      --cedar-start-scale: .99;
+      animation-duration: 510ms;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    [data-cedar-spotlight] {
+      position: relative;
+      --cedar-light-color: #51719a21;
+    }
+
+    [data-cedar-spotlight='dark'] { --cedar-light-color: #abcaff36; }
+    [data-cedar-spotlight='stage'] { --cedar-light-color: color-mix(in srgb, var(--accent, #51719a) 19%, transparent); }
+
+    [data-cedar-spotlight]::after {
+      content: '';
+      position: absolute;
+      z-index: 5;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(255px circle at var(--cedar-light-x, 50%) var(--cedar-light-y, 50%), var(--cedar-light-color), transparent 86%);
+      opacity: 0;
+      transition: opacity 320ms var(--cedar-ease);
+    }
+
+    [data-cedar-spotlight][data-cedar-pointing]::after { opacity: 1; }
+
+    [data-cedar-media='card'] > img {
+      transition: scale 620ms var(--cedar-ease);
+    }
+
+    a:hover > [data-cedar-media='card'] > img,
+    a:focus-visible > [data-cedar-media='card'] > img {
+      scale: 1.035;
+    }
+  }
+
+  @supports (animation-timeline: view()) and (animation-range: cover 0% cover 65%) {
+    [data-cedar-media] {
+      view-timeline: --cedar-photo block;
+    }
+
+    [data-cedar-media] > img {
+      --cedar-photo-zoom: 1.07;
+      animation: cedarPhoto linear both;
+      animation-timeline: --cedar-photo;
+      animation-range: cover 0% cover 65%;
+    }
+
+    [data-cedar-media='feature'] > img {
+      --cedar-photo-zoom: 1.115;
+    }
+
+    @media (min-width: 851px) {
+      [data-cedar-public] #home {
+        view-timeline: --cedar-hero block;
+      }
+
+      [data-cedar-public] #home .system-stage:not(:has(.is-paused)) > .system-visual {
+        animation: cedarHeroDepth linear both;
+        animation-timeline: --cedar-hero;
+        animation-range: exit 0% exit 82%;
+      }
+    }
+  }
+}
+
+@keyframes cedarEntrance {
+  from { opacity: var(--cedar-start-opacity); translate: 0 var(--cedar-rise); scale: var(--cedar-start-scale); }
+  to { opacity: 1; translate: 0 0; scale: 1; }
+}
+
+@keyframes cedarRouteEnter {
+  from { opacity: .78; translate: 0 9px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes cedarPhoto {
+  from { transform: scale(var(--cedar-photo-zoom)); }
+  to { transform: scale(1); }
+}
+
+@keyframes cedarHeroDepth {
+  from { translate: 0 0; scale: 1; }
+  to { translate: 0 -16px; scale: .935; }
+}

@@ -6,17 +6,15 @@
 .motionStatus{display:flex;align-items:center;gap:7px;white-space:nowrap}.motionStatus i{width:6px;height:6px;border-radius:50%;background:#a4a4a7;flex:none}
 .motionTrack{height:2px;background:#e8e8e9;flex:1;max-width:110px;overflow:hidden;border-radius:2px;margin-left:auto}.motionTrack span{display:block;width:38%;height:100%;background:#777;transform:translateX(-105%)}
 .motionButton{display:flex;align-items:center;gap:5px;border:0;background:transparent;font-size:11px;color:#47474b;padding:4px 5px;border-radius:4px;min-height:27px}.motionButton svg{width:13px;height:13px}.motionButton:hover{background:#eee}.motionButton:focus-visible{outline:2px solid #555;outline-offset:2px}.motionButton:disabled{opacity:.45;cursor:default}
-@keyframes studioEnter{from{opacity:.68;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes studioSweep{from{transform:translateX(-105%)}to{transform:translateX(370%)}}
 @keyframes studioScene{from{opacity:.55;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 @keyframes studioSignal{0%,100%{box-shadow:0 0 0 0 #7770}50%{box-shadow:0 0 0 4px #7773}}
 @keyframes studioNode{from{box-shadow:0 0 0 0 #7774}to{box-shadow:0 0 0 5px #7770}}
-.expansion [data-studio-reveal=entered]{animation:studioEnter .75s cubic-bezier(.2,.7,.25,1) both}
 .frame[data-motion-running=true] .motionStatus i{background:#555;animation:studioSignal 2s ease-in-out infinite}
 .frame[data-motion-running=true] .motionTrack span{animation:studioSweep 2.1s ease-in-out infinite}
 .frame[data-motion-running=true] .ticket,.frame[data-motion-running=true] .table tbody,.frame[data-motion-running=true] .mockHero,.frame[data-motion-running=true] .mockBody,.frame[data-motion-running=true] .answerText,.frame[data-motion-running=true] .excerpt{animation:studioScene .48s cubic-bezier(.2,.7,.25,1) both}
 .flowNode{transition:background .3s,border-color .3s,box-shadow .3s}.frame[data-motion-running=true] .flowNode[data-state=active]{animation:studioNode .9s ease-out both}
-@media(prefers-reduced-motion:reduce){.expansion [data-studio-reveal=entered],.expansion .frame *{animation:none!important;transition:none!important}.motionTrack{display:none}}
+@media(prefers-reduced-motion:reduce){.expansion .frame *{animation:none!important;transition:none!important}.motionTrack{display:none}}
 /* Reserve a stable preview canvas across desktop/mobile and page changes. */
 .webStage{min-height:520px}.mockSite{min-height:350px}.mockSite[data-mobile=true]{min-height:395px}
 @media(max-width:700px){.webStage{min-height:460px}.motionStrip{gap:8px;padding-inline:10px}.motionTrack{max-width:64px}}
@@ -279,3 +277,71 @@
 /* 1.9.4.5.11: a quiet, single Sunlit canvas instead of a dark frame around another frame. */
 .expansion [data-studio-tone=web] .showcaseToolbar { background: transparent; border-bottom: 0; }
 .expansion [data-studio-tone=web] .appFoot { background: transparent; }
+
+/* The chapter controls stay within this showcase as its panels scroll by. */
+.chapterRail {
+  position: sticky;
+  top: 73px;
+  z-index: 8;
+  margin-bottom: clamp(34px, 5vw, 70px);
+  background: #fafafaf2;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.expansion .chapterRail .chapterNav {
+  margin-bottom: 0;
+  border-block: 1px solid #dce0e4;
+}
+
+.expansion .chapterRail .chapterNav a {
+  margin: 0;
+  padding: 15px clamp(10px, 1.6vw, 24px);
+  border: 0;
+  border-radius: 0;
+  min-width: 0;
+}
+
+.expansion .chapterRail .chapterNav a + a { border-inline-start: 1px solid #e4e7eb; }
+
+.expansion .chapterRail .chapterNav a[aria-current='location'] {
+  background: var(--nav-wash);
+  color: var(--nav);
+  font-weight: 650;
+}
+
+.chapterRail a[aria-current='location']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: var(--nav);
+  transform-origin: left center;
+  transform: scaleX(var(--cedar-chapter-progress, 0));
+}
+
+.expansion .chapterRail .chapterNav a:focus-visible { outline-offset: -4px; }
+
+@media (max-width: 1050px) {
+  .chapterRail { top: 65px; }
+}
+
+@media (max-width: 740px) {
+  .expansion .chapterRail .chapterNav {
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+
+  .expansion .chapterRail .chapterNav a { padding: 10px 8px; white-space: nowrap; min-height: 46px; }
+  .chapterRail .chapterNav a small { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapterRail a[aria-current='location']::after { transform: none; }
+}
+
+.chapterRail ~ :is(.chapter, .cinematicChapters) .frame :is(button, a, input, select) {
+  scroll-margin-block-start: 55px;
+}

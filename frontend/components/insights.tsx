@@ -18,7 +18,7 @@ export async function Insights({ all = false, page = 1, copy = websiteDefaults.c
   const posts = all ? result.results : result.results.slice(0, 3);
   const Heading = all ? 'h1' : 'h2';
   return <section className="section insights" id="insights"><div className="wrap">
-    <div className="section-head"><Heading>{all ? 'Insights.' : copy.insightsHeading}</Heading><p>{copy.insightsIntro}</p></div>
+    <div className="section-head" data-cedar-route={all ? "" : undefined} data-cedar-reveal={all ? undefined : "copy"}><Heading>{all ? 'Insights.' : copy.insightsHeading}</Heading><p>{copy.insightsIntro}</p></div>
     {posts.length ? <ArticleGrid posts={posts} headingLevel={all ? 2 : 3} eagerCovers={all} /> : <p>No published articles on this page.</p>}
     {all ? <nav aria-label="Blog pagination" className="blog-pagination">
       {page > 1 && <Link className="textbtn" href={page === 2 ? '/blog' : `/blog?page=${page - 1}`}>← Previous</Link>}

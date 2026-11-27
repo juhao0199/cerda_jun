@@ -132,7 +132,7 @@ export function ProjectInquiry({ endpoint, email, discovery, onRemoveEstimate }:
 
   return <section id="contact" className={styles.section} aria-labelledby="project-contact-title">
     <div className={'wrap ' + styles.layout}>
-      <div className={styles.intro}>
+      <div className={styles.intro} data-cedar-reveal="copy">
         <h2 id="project-contact-title">Tell us about<br className={styles.titleBreak} /> your project.</h2>
         <p>Planning a website, custom software, or an automation? A few lines about what you want to build or improve are enough to start.</p>
         <div className={styles.next}>
@@ -153,7 +153,7 @@ export function ProjectInquiry({ endpoint, email, discovery, onRemoveEstimate }:
         <p>We’ll review your project and reply to <strong>{brief.email.trim()}</strong>.</p>
         <p className={styles.reference}>Reference <code>{reference}</code></p>
         <button className={styles.textButton} type="button" onClick={startAgain}>Send another message <span aria-hidden="true">↗</span></button>
-      </div> : <form className={styles.paper} aria-labelledby="project-inquiry-heading" onSubmit={submit}>
+      </div> : <form className={styles.paper} data-cedar-reveal="surface" aria-labelledby="project-inquiry-heading" onSubmit={submit}>
         <h3 id="project-inquiry-heading">{endpoint ? 'Project inquiry' : 'Prepare a project brief'}</h3>
         {!endpoint && <p className={styles.offline}>Fill this in to download a brief you can attach to your email.</p>}
         <fieldset className={styles.fields} disabled={pending}>

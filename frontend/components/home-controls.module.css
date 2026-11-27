@@ -1,0 +1,122 @@
+.processTabs {
+  position: relative;
+}
+
+.estimateProgress {
+  position: relative;
+  padding-block-end: 14px;
+}
+
+.estimateProgress::before,
+.estimateProgress::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  border-radius: 2px;
+  content: '';
+  pointer-events: none;
+}
+
+.estimateProgress::before { background-color: #405a8033; }
+
+.estimateProgress::after {
+  background-color: #405a80;
+  transform: scaleX(var(--estimate-progress));
+  transform-origin: left;
+}
+
+.faqEntry > summary {
+  align-items: center;
+  min-height: 34px;
+}
+
+.faqEntry > summary > span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border: 1px solid #405a803b;
+  border-radius: 50%;
+  background-color: transparent;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.faqEntry[open] > summary > span {
+  border-color: #405a8080;
+  background-color: #e5ebf2;
+}
+
+.faqAnswer {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .estimateProgress::after { transition: transform 520ms cubic-bezier(.2, .72, .23, 1); }
+
+  .processCopy[data-cedar-switch],
+  .processOutput[data-cedar-switch],
+  .estimateContent[data-cedar-switch] {
+    animation: panelEnter 450ms cubic-bezier(.2, .72, .23, 1) both;
+  }
+
+  .processOutput[data-cedar-switch] { animation-delay: 45ms; }
+
+  .processPanels[data-control-direction='backward'],
+  .estimateContent[data-control-direction='backward'] {
+    --panel-travel: -16px;
+  }
+
+  :global(.studio-home) .faqEntry > summary > span {
+    transition:
+      transform 370ms cubic-bezier(.2, .72, .23, 1),
+      background-color 220ms ease,
+      border-color 220ms ease;
+  }
+
+  @supports selector(details::details-content) and (transition-behavior: allow-discrete) {
+    .faqEntry::details-content {
+      display: grid;
+      grid-template-rows: 0fr;
+      overflow: hidden;
+      content-visibility: hidden;
+      opacity: 0;
+      transition:
+        grid-template-rows 440ms cubic-bezier(.2, .72, .23, 1),
+        opacity 340ms ease,
+        content-visibility 440ms allow-discrete;
+    }
+
+    .faqEntry[open]::details-content {
+      grid-template-rows: 1fr;
+      content-visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  @media (min-width: 521px) {
+    .processTabs::after {
+      position: absolute;
+      inset: auto auto 0 0;
+      width: calc(100% / 6);
+      height: 2px;
+      background-color: #405a80;
+      content: '';
+      pointer-events: none;
+      transform: translateX(calc(var(--stage-index) * 100%));
+      transition: transform 480ms cubic-bezier(.2, .72, .23, 1);
+    }
+
+    :global(.studio-home) .processTabs button[aria-selected='true'] {
+      border-bottom-color: transparent;
+    }
+  }
+}
+
+@keyframes panelEnter {
+  from { opacity: .73; translate: var(--panel-travel, 16px) 2px; }
+  to { opacity: 1; translate: 0 0; }
+}

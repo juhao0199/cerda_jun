@@ -34,13 +34,13 @@ export default async function ServicePage({ params }: Props) {
     <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{__html:safeJsonLd(graph)}} />
     <article className="wrap article-wrap">
       <nav aria-label="Breadcrumb" className="page-crumb"><Link href="/">Home</Link> <span>/</span> {service.label}</nav>
-      <div className="article-intro"><span>{service.label}</span><h1>{service.title}</h1><p>{service.summary}</p></div>
+      <div className="article-intro" data-cedar-route=""><span>{service.label}</span><h1>{service.title}</h1><p>{service.summary}</p></div>
       <div className="article-body">
         <h2>What to agree for your project</h2>
         <ul>{service.outcomes.map(outcome => <li key={outcome}>{outcome}</li>)}</ul>
-        {service.decisions.map(decision => <section key={decision.title}><h2>{decision.title}</h2><p>{decision.body}</p></section>)}
+        {service.decisions.map(decision => <section key={decision.title}><h2 data-cedar-reveal="copy">{decision.title}</h2><p>{decision.body}</p></section>)}
         <section><h2>{service.question}</h2><p>{service.answer}</p></section>
-        <aside className="reading-next" aria-label="Explore this service">
+        <aside className="reading-next" data-cedar-reveal="surface" aria-label="Explore this service">
           <Link href={`/#${service.demo}`}>See the interactive example</Link>
           {guide && <Link href={`/blog/${service.article}`}>Read the related guide</Link>}
           <Link href="/#contact" className="btn darkbtn">Discuss this project</Link>

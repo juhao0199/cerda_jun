@@ -18,10 +18,12 @@ export function ArticleCard({ post, headingLevel, eager }: { post: PublicPost; h
   const titleId = `article-${post.slug}`;
   const topics = topicsFor(post);
 
-  return <article className={styles.card}>
+  return <article className={styles.card} data-cedar-reveal="card" data-cedar-spotlight="card">
     <Link className={styles.cardLink} href={`/blog/${post.slug}`} aria-labelledby={titleId} prefetch={false}>
-      <img className={styles.cover} src={cover || '/share.png'} alt={cover ? post.coverAlt ?? '' : ''}
-        width={1200} height={630} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      <div data-cedar-media="card">
+        <img className={styles.cover} src={cover || '/share.png'} alt={cover ? post.coverAlt ?? '' : ''}
+          width={1200} height={630} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      </div>
       <div className={styles.body}>
         <Heading id={titleId}>{post.title}</Heading>
         <p className={styles.meta}><span>By {post.author || 'Cedar & Cursor'}</span><span aria-hidden="true">·</span><span>{post.minutes} min read</span></p>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { connection } from 'next/server';
 import type { ReactNode } from 'react';
 import './globals.css';
+import './public-motion.css';
 export const metadata: Metadata = {
   title: 'Cedar & Cursor — Digital Technology Studio',
   description: 'Websites, software and AI tools that make businesses work better.',

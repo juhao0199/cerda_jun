@@ -76,25 +76,25 @@ export default async function Article({ params }: Props) {
     <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: safeJsonLd(graph) }} />
     <article className="wrap article-wrap">
       <nav className="page-crumb" aria-label="Breadcrumb"><Link href="/">Home</Link><span>/</span><Link href="/blog">Insights</Link></nav>
-      <div className="article-intro">
+      <div className="article-intro" data-cedar-route="">
         <span>{post.category} · {post.minutes} min read · {post.author || 'Cedar & Cursor'}</span>
         <h1>{post.title}</h1><p>{post.summary}</p>
       </div>
-      {cover && <img className="blog-cover" src={cover} alt={post.coverAlt ?? ''} />}
+      {cover && <div data-cedar-media="feature"><img className="blog-cover" src={cover} alt={post.coverAlt ?? ''} width={1200} height={630} /></div>}
       <div className="article-body">
         {post.takeaway && <aside className="article-takeaway"><strong>Quick answer</strong><p>{post.takeaway}</p></aside>}
         {post.document ? <RichRender document={post.document} /> : post.sections.map((section, index) => <section key={index}>
-          <h2>{section.heading}</h2>
+          <h2 data-cedar-reveal="copy">{section.heading}</h2>
           {section.body.split(/\n\s*\n/).map((paragraph, paragraphIndex) => <p key={paragraphIndex} className="blog-paragraph">{paragraph}</p>)}
         </section>)}
         {post.guidance?.map(section => <section key={section.heading}>
-          <h2>{section.heading}</h2>
+          <h2 data-cedar-reveal="copy">{section.heading}</h2>
           {section.body.split(/\n\s*\n/).map((paragraph, index) => <p key={index} className="blog-paragraph">{paragraph}</p>)}
         </section>)}
         <aside className={styles.topics} aria-label="Article topics"><RelatedTopics topics={topics} /></aside>
       </div>
       {related.length > 0 && <section id="related-articles" className={styles.related} aria-labelledby="related-articles-heading">
-        <h2 id="related-articles-heading">Related articles</h2>
+        <h2 id="related-articles-heading" data-cedar-reveal="copy">Related articles</h2>
         <ArticleGrid posts={related} headingLevel={3} />
       </section>}
       <div className={styles.actions}>
